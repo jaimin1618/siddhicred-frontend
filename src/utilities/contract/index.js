@@ -4,6 +4,10 @@ const address = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = _abi.abi;
 
 // Meta Mask and Wallet functions
+
+/*==========================================
+Basic Wallet and Wallet address functions
+==========================================*/
 async function requestAccounts() {
   if (window.ethereum) {
     const provider = new ethers.BrowserProvider(window.ethereum);
@@ -27,6 +31,45 @@ async function getAddress() {
   return address;
 }
 
-const _ = { requestAccounts, getOwner, getAddress };
+async function getAdmin() {
+  const signer = await requestAccounts();
+  const contract = new ethers.Contract(address, abi, signer);
+  const adminAddress = await contract.admin();
+  return adminAddress;
+}
+
+/*==========================================
+Admin Role utilities
+==========================================*/
+async function createIssuer(walletAddress, tokenId) {}
+async function removeIssuer(walletAddress, tokenId) {}
+async function updateIssuer(walletAddress, tokenId) {}
+
+/*==========================================
+Issuer Role utilities
+==========================================*/
+async function issueCertificate(walletAddress, tokenURI) {}
+async function burnCertificate(tokenId) {}
+
+/*==========================================
+User/Default Role utilities
+==========================================*/
+async function getIssuerInfo(walletAddress) {}
+async function balanceOf(walletAddress) {}
+async function getWalletAddressRole(walletAddress) {
+  const signer = await requestAccounts();
+  const contract = new ethers.Contract(address, abi, signer);
+  const walletAddressRole = await contract.getWalletAddressRole(walletAddress);
+  console.log(walletAddressRole);
+  return walletAddressRole;
+}
+
+const _ = {
+  requestAccounts,
+  getOwner,
+  getAddress,
+  getWalletAddressRole,
+  getAdmin,
+};
 
 export default _;

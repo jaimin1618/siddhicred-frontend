@@ -1,56 +1,43 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { ethers } from "ethers";
 
 import "./App.css";
 import Header from "./common/Header";
 import Footer from "./common/Footer";
+import Main from "./roles/Main";
 import { ROLES } from "./constants";
 import Interface from "./utilities/contract/index";
-console.log(Interface);
 
 function App() {
   // connect the wallet and see, what's the role of current user
   const [role, setRole] = useState(ROLES.HOLDER);
-  const [userAccount, setUserAccount] = useState("");
+  const [account, setAccount] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   useEffect(() => {
-    const setUserRole = async () => {
+    const setAccessRole = async () => {
       const userAddr = await Interface.getAddress();
-      setUserAccount(userAddr);
+      setAccount(userAddr);
 
-      const isIssuer = await Interface.getAddress(userAddr);
-      console.log(isIssuer);
-      const contractAdmin = process.env.REACT_APP_CONTRACT_OWNER;
-      if (userAddr === contractAdmin) {
-        setRole(ROLES.ADMIN);
-      } else if (isIssuer) {
-        setRole(ROLES.ISSUER);
-      } else {
-        setRole(ROLES.USER);
-      }
+      const role = await Interface.getWalletAddressRole(userAddr);
+
+      if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
+      else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
+      else setRole(ROLES.USER);
     };
-    setUserRole();
-    // async function onAccountChange() {
-    //   window.ethereum.on("accountsChanged", async function () {
-    //     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    //     const accounts = await provider.send("eth_requestAccounts", []);
-    //     setUserAccount(accounts[0]);
-    //     setUserRole();
-    //     window.location.href = "/";
-    //   });
-    // }
-    // onAccountChange();
-  }, []);
 
-  useEffect(() => {}, [role]);
+    setAccessRole();
+  }, [account]);
 
   return (
     <div className="App">
-      <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-      <Routes>
-        <Route path="/" />
-      </Routes>
+      <Header
+        userRole={role}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+      />
+      <Main />
       <Footer />
     </div>
   );

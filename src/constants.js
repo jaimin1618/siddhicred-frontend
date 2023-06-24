@@ -5,8 +5,8 @@ const ROLES = {
 };
 
 const adminNavigations = [
-  { name: "Home", href: "/home" },
-  { name: "Profile", href: "/profile" },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Manage Issuers", href: "/manage_issuers" },
 ];
 /*================================
 Home => Dashboard to view current Issuers

@@ -113,7 +113,10 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
                     key={idx}
                     className="relative hover:text-black"
                   >
-                    <a className="active block py-3 lg:py-7 px-6 my-1 rounded border-2 lg:border-transparent ">
+                    <a
+                      style={{ cursor: "pointer" }}
+                      className="active block py-3 lg:py-7 px-6 my-1 rounded border-2 lg:border-transparent "
+                    >
                       {nav.name}
                     </a>
                   </li>
