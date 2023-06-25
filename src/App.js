@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ethers } from "ethers";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
 import Header from "./common/Header";
@@ -19,12 +21,14 @@ function App() {
     const setAccessRole = async () => {
       const userAddr = await Interface.getAddress();
       setAccount(userAddr);
-
       const role = await Interface.getWalletAddressRole(userAddr);
 
       if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
       else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
       else setRole(ROLES.USER);
+
+      const count = await Interface.countIssuedCertificates(userAddr);
+      console.log(count);
     };
 
     setAccessRole();
@@ -32,6 +36,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <Header
         userRole={role}
         isMenuOpen={isMenuOpen}

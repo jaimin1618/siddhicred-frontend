@@ -1,7 +1,8 @@
 import React from "react";
+import CreateIssuer from "./CreateIssuer";
 
 const ManageIssuer = () => {
-  return "simple";
+  return <CreateIssuer />;
 };
 
 export default ManageIssuer;

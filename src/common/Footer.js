@@ -190,7 +190,7 @@ const Footer = () => {
           <div className="row">
             <div className="col-12 col-md text-center">
               <p className="d-block my-3">
-                Copyright © Your Company | All rights reserved.
+                Copyright © Jaimin Chokhawala | All rights reserved.
               </p>
             </div>
           </div>
