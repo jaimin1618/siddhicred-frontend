@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
-import { ethers } from "ethers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,6 +8,8 @@ import Footer from "./common/Footer";
 import Main from "./roles/Main";
 import { ROLES } from "./constants";
 import Interface from "./utilities/contract/index";
+import User from "./context/User";
+console.log(Interface);
 
 function App() {
   // connect the wallet and see, what's the role of current user
@@ -19,16 +19,16 @@ function App() {
 
   useEffect(() => {
     const setAccessRole = async () => {
-      const userAddr = await Interface.getAddress();
+      const userAddr = await Interface.Public.getAddress();
       setAccount(userAddr);
-      const role = await Interface.getWalletAddressRole(userAddr);
+      const role = await Interface.Public.getWalletAddressRole(userAddr);
 
       if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
       else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
       else setRole(ROLES.USER);
 
-      const count = await Interface.countIssuedCertificates(userAddr);
-      console.log(count);
+      const count = await Interface.Public.countIssuedCertificates(userAddr);
+      console.log("owned: ", count);
     };
 
     setAccessRole();
@@ -36,14 +36,21 @@ function App() {
 
   return (
     <div className="App">
-      <ToastContainer />
-      <Header
-        userRole={role}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-      />
-      <Main />
-      <Footer />
+      <User.Provider
+        value={{
+          address: account,
+          role,
+        }}
+      >
+        <ToastContainer />
+        <Header
+          userRole={role}
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+        />
+        <Main />
+        <Footer />
+      </User.Provider>
     </div>
   );
 }

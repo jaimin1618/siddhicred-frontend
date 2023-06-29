@@ -13,7 +13,7 @@ import ManageIssuers from "./adminRole/ManageIssuers";
 import IssueCertificate from "./issuerRole/IssueCertificate";
 import BurnCertificate from "./issuerRole/burnCertificate";
 
-const Main = (userRole) => {
+const Main = () => {
   return (
     <Routes>
       {/* User Routes */}

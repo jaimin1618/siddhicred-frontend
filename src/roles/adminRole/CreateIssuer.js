@@ -7,7 +7,7 @@ const CreateIssuer = () => {
   const [issuerAddr, setIssuerAddr] = useState("");
 
   const handleClick = async () => {
-    const res = await Interface.createIssuer(
+    const res = await Interface.Admin.createIssuer(
       issuerAddr,
       `ipfs://${issuerAddr}`
     );

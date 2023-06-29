@@ -7,7 +7,7 @@ const BurnCertificate = () => {
   const [tokenId, setTokenId] = useState(-1);
 
   const handleClick = async () => {
-    const res = await Interface.burnCertificate(tokenId);
+    const res = await Interface.Issuer.burnCertificate(tokenId);
     console.log(res);
 
     if (res.Status === "Error") {

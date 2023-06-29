@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import Interface from "../../utilities/contract/";
+
 
 const IssueCertificate = () => {
   const [mintInfo, setMintInfo] = useState({
@@ -18,7 +19,7 @@ const IssueCertificate = () => {
   };
 
   const handleButtonClick = async () => {
-    const res = await Interface.issueCertificate(
+    const res = await Interface.Issuer.issueCertificate(
       mintInfo.walletAddress,
       mintInfo.ipfsHash
     );

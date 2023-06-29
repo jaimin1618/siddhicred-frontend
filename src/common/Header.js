@@ -48,8 +48,8 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
         <div className="container xl:max-w-6xl mx-auto px-4">
           <div className="lg:flex lg:justify-between">
             <div className="flex justify-between">
-              <div className="mx-w-10 text-4xl font-bold capitalize text-gray-900 flex items-center">
-                Tailone
+              <div className="underline  underline-offset-8 mx-w-10 text-4xl font-bold capitalize text-gray-900 flex items-center">
+                SiddhiCred
               </div>
               {/* <!-- mobile nav --> */}
               <div className="flex flex-row items-center py-4 lg:py-0">
