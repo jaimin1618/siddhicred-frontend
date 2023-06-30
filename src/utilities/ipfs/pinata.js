@@ -31,11 +31,16 @@ async function pinFile(formData) {
       }
     );
 
-    console.log(res);
-
-    return response;
+    return {
+      Status: "Success",
+      Message: "File uploaded to IPFS successfully",
+      IpfsHash: res.data.IpfsHash,
+    };
   } catch (error) {
-    console.log("PINATA FILE UPLOAD ERROR", error);
+    return {
+      Status: "Error",
+      Message: "Uploading file to IPFS failed",
+    };
   }
 }
 
@@ -49,22 +54,30 @@ async function pinJson(json) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${REACT_APP_PINATA_JWT}`,
     },
-    data: data,
+    data,
   };
 
   try {
-    const res = axios(config);
+    const res = await axios(config);
     console.log(res.data);
-    return res;
+
+    return {
+      Status: "Success",
+      Message: "JSON uploaded to IPFS successfully",
+      IpfsHash: res.data.IpfsHash,
+    };
   } catch (error) {
-    console.log("PINATA JSON UPLOAD ERROR", error);
+    return {
+      Status: "Error",
+      Message: "Uploading JSON to IPFS failed",
+    };
   }
 }
 
-async function unpinFile(cid) {
+async function unpinFile(CID) {
   var config = {
     method: "delete",
-    url: `https://api.pinata.cloud/pinning/unpin/${cid}`,
+    url: `https://api.pinata.cloud/pinning/unpin/${CID}`,
     headers: {
       Authorization: `Bearer ${REACT_APP_PINATA_JWT}`,
     },

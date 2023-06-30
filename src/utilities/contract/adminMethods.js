@@ -36,7 +36,7 @@ async function createIssuer(walletAddress, cid) {
 
   return {
     Status: "Success",
-    Message: "Issuer created successfull",
+    Message: "Issuer created successfully",
   };
 }
 async function removeIssuer(walletAddress, tokenId) {}

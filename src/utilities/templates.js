@@ -42,7 +42,4 @@ class Issuer {
   }
 }
 
-const _ = {
-  Certificate,
-  Issuer,
-};
+export { Certificate, Issuer };

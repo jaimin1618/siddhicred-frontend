@@ -1,10 +1,39 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import User from "../../context/User";
+import Interface from "../../utilities/contract/";
 
-const Profile = () => {
-  const { address } = useContext(User);
-  const [profile, setProfile] = useState({});
+const IssuerProfile = () => {
+  const { address, role } = useContext(User);
+  console.log(role);
+
+  useEffect(() => {
+    const getIssuerInfo = async () => {
+      const res = await Interface.Public.getIssuerInfo(address);
+      console.log(res);
+
+      if (res.Status === "Error") {
+        toast.error(res.Message, {
+          position: toast.POSITION.TOP_CENTER,
+          hideProgressBar: true,
+          autoClose: 3000,
+        });
+
+        return;
+      }
+
+      toast.success(res.Message, {
+        position: toast.POSITION.TOP_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      console.log(res);
+    };
+
+    getIssuerInfo();
+  }, []);
 
   const handleInputChange = () => {};
 
@@ -18,37 +47,37 @@ const Profile = () => {
               <div className="text-gray-600">
                 <img
                   src="/notfound.png"
-                  class="bg-red-400 w-1/2 m-auto rounded-full"
+                  className="bg-red-400 w-1/2 m-auto rounded-full"
                   alt="Avatar"
                 />
-                <div class="flex justify-center mt-8">
-                  <div class="max-w-2xl rounded-lg shadow-xl bg-gray-50">
-                    <div class="m-4">
-                      <label class="inline-block mb-2 text-gray-500">
+                <div className="flex justify-center mt-8">
+                  <div className="max-w-2xl rounded-lg shadow-xl bg-gray-50">
+                    <div className="m-4">
+                      <label className="inline-block mb-2 text-gray-500">
                         Upload Profile Picture
                       </label>
-                      <div class="flex items-center justify-center w-full">
-                        <label class="flex flex-col w-full h-24 border-4 border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
-                          <div class="flex flex-col items-center justify-center pt-7">
+                      <div className="flex items-center justify-center w-full">
+                        <label className="flex flex-col w-full h-24 border-4 border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
+                          <div className="flex flex-col items-center justify-center pt-7">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              class="w-8 h-8 text-gray-400 group-hover:text-gray-600"
+                              className="w-8 h-8 text-gray-400 group-hover:text-gray-600"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                               />
                             </svg>
-                            <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
+                            <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
                               Attach a file
                             </p>
                           </div>
-                          <input type="file" class="opacity-0" />
+                          <input type="file" className="opacity-0" />
                         </label>
                       </div>
                     </div>
@@ -161,4 +190,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default IssuerProfile;
