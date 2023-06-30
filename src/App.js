@@ -11,7 +11,7 @@ import Interface from "./utilities/contract/index";
 import User from "./context/User";
 console.log(Interface);
 
-function App() {
+const App = () => {
   // connect the wallet and see, what's the role of current user
   const [role, setRole] = useState(ROLES.HOLDER);
   const [account, setAccount] = useState("");
@@ -19,15 +19,15 @@ function App() {
 
   useEffect(() => {
     const setAccessRole = async () => {
-      const userAddr = await Interface.Public.getAddress();
-      setAccount(userAddr);
-      const role = await Interface.Public.getWalletAddressRole(userAddr);
+      const address = await Interface.Public.getAddress();
+      setAccount(address);
+      const role = await Interface.Public.getWalletAddressRole(address);
 
       if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
       else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
       else setRole(ROLES.USER);
 
-      const count = await Interface.Public.countIssuedCertificates(userAddr);
+      const count = await Interface.Public.countIssuedCertificates(address);
       console.log("owned: ", count);
     };
 
@@ -53,6 +53,6 @@ function App() {
       </User.Provider>
     </div>
   );
-}
+};
 
 export default App;

@@ -43,12 +43,12 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
   }, [userRole]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-black h-24">
       <nav className="main-nav">
         <div className="container xl:max-w-6xl mx-auto px-4">
           <div className="lg:flex lg:justify-between">
             <div className="flex justify-between">
-              <div className="underline  underline-offset-8 mx-w-10 text-4xl font-bold capitalize text-gray-900 flex items-center">
+              <div className="underline  underline-offset-8 mx-w-10 text-4xl font-bold capitalize text-white flex items-center">
                 SiddhiCred
               </div>
               {/* <!-- mobile nav --> */}
@@ -57,7 +57,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     type="button"
-                    className={`menu-mobile py-3 px-6 border-b-2 border-transparent`}
+                    className={`menu-mobile py-2 px-2 border-b-1 rounded-sm border-transparent bg-white`}
                   >
                     <span className="sr-only">Mobile menu</span>
                     {isMenuOpen ? (
@@ -105,17 +105,17 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
               <ul
                 className={`${
                   isMenuOpen ? "hidden" : ""
-                } navbar bg-white lg:bg-transparent w-full text-center lg:text-left lg:flex lg:flex-row text-gray-900 text-sm items-center font-bold`}
+                } navbar lg:bg-transparent w-full text-center lg:text-left lg:flex lg:flex-row text-gray-900 text-sm items-center font-bold mt-1 pt-3`}
               >
                 {navigation.map((nav, idx) => (
                   <li
                     onClick={() => navigate(nav.href)}
                     key={idx}
-                    className="relative hover:text-black"
+                    className="relative hover:underline hover:underline-offset-8 text-white bg-black"
                   >
                     <a
                       style={{ cursor: "pointer" }}
-                      className="active block py-3 lg:py-7 px-6 my-1 rounded border-2 lg:border-transparent "
+                      className="active block py-2 lg:py-7 px-3 rounded-sm lg:border-transparent "
                     >
                       {nav.name}
                     </a>

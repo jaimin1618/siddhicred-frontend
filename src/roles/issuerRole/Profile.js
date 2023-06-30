@@ -1,41 +1,12 @@
-import React, { useState, useContext } from "react";
-import { toast } from "react-toastify";
+import React, { useContext, useState } from "react";
 
-import Interface from "../../utilities/contract";
 import User from "../../context/User";
-import IssuerTemplate from "../../";
 
-const CreateIssuer = () => {
+const Profile = () => {
   const { address } = useContext(User);
-  const [issuerAddr, setIssuerAddr] = useState("");
   const [profile, setProfile] = useState({});
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    return;
-  };
-
-  const handleClick = async () => {
-    const res = await Interface.Admin.createIssuer(
-      issuerAddr,
-      `ipfs://${issuerAddr}`
-    );
-
-    if (res.Status === "Error") {
-      toast.error(res.Message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        hideProgressBar: true,
-        autoClose: 3000,
-      });
-    } else if (res.Status === "Success") {
-      toast.success(res.Message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        hideProgressBar: true,
-        autoClose: 3000,
-      });
-    }
-  };
+  const handleInputChange = () => {};
 
   return (
     <div className="h-5/6 p-3 bg-gray-100 flex items-center justify-center mt-24">
@@ -77,7 +48,7 @@ const CreateIssuer = () => {
                               Attach a file
                             </p>
                           </div>
-                          <input name="file" type="file" class="opacity-0" />
+                          <input type="file" class="opacity-0" />
                         </label>
                       </div>
                     </div>
@@ -90,11 +61,11 @@ const CreateIssuer = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization Name</label>
                     <input
-                      name="organizationName"
                       type="text"
+                      name="address"
                       id="address"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value={profile.organizationName}
+                      value=""
                       placeholder=""
                     />
                   </div>
@@ -105,10 +76,10 @@ const CreateIssuer = () => {
                     </label>
                     <input
                       type="text"
-                      name="issuerName"
+                      name="city"
                       id="city"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value={profile.issuerName}
+                      value=""
                       placeholder=""
                     />
                   </div>
@@ -116,23 +87,23 @@ const CreateIssuer = () => {
                   <div className="md:col-span-5">
                     <label htmlFor="full_name">Issuer Public Address</label>
                     <input
-                      name="issuerAddress"
                       type="text"
                       id="full_name"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      // disabled
-                      value={profile.issuerAddress}
+                      disabled
+                      value={address}
+                      name="issuerName"
                     />
                   </div>
 
                   <div className="md:col-span-5">
                     <label htmlFor="email">Contact Email Address</label>
                     <input
-                      name="issuerContactEmail"
-                      value={profile.issuerContactEmail}
                       type="text"
+                      name="email"
                       id="email"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      value=""
                       placeholder="email@domain.com"
                     />
                   </div>
@@ -140,9 +111,8 @@ const CreateIssuer = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization Website</label>
                     <input
-                      name="issuerOrganizationWebsite"
-                      profile={profile.issuerOrganizationWebsite}
                       type="text"
+                      name="address"
                       id="address"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                       value=""
@@ -153,12 +123,11 @@ const CreateIssuer = () => {
                   <div className="md:col-span-2">
                     <label htmlFor="city">Country</label>
                     <input
-                      name="country"
-                      value={profile.country}
                       type="text"
+                      name="city"
                       id="city"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      // value=""
+                      value=""
                       placeholder=""
                     />
                   </div>
@@ -166,7 +135,7 @@ const CreateIssuer = () => {
                   <div className="md:col-span-5 text-right">
                     <div className="inline-flex items-end">
                       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded">
-                        Create Issuer
+                        Update Profile
                       </button>
                     </div>
                   </div>
@@ -192,29 +161,4 @@ const CreateIssuer = () => {
   );
 };
 
-export default CreateIssuer;
-
-/**
- * 
- *   <div className="flex bg-gray-200 h-screen justify-center">
-      <form className="w-full max-w-sm flex">
-        <div className="flex items-center border-b border-teal-500 py-2">
-          <input
-            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none bg-gray-300 rounded-sm"
-            type="text"
-            placeholder="0xf39Fd6e..."
-            aria-label="Issuer Public Wallet Address"
-            onChange={(e) => setIssuerAddr(e.target.value)}
-            value={issuerAddr}
-          />
-          <button
-            onClick={() => handleClick()}
-            className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-            type="button"
-          >
-            Create issuer
-          </button>
-        </div>
-      </form>
-    </div>
- */
+export default Profile;

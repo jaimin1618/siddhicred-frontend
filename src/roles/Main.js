@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 // user routes
 import Issued from "./default/Issued";
 import Home from "./default/Home";
-import Profile from "./default/Profile";
+import IssuerProfile from "./issuerRole/Profile";
 import Search from "./default/Search";
 
 // admin routes
@@ -20,7 +20,6 @@ const Main = () => {
       <Route path="/issued" element={<Issued />} />
       <Route path="/home" element={<Home />} />
       <Route path="/search" element={<Search />} />
-      <Route path="/profile" element={<Profile />} />
 
       {/* Admin Routes */}
       <Route path="/manage_issuers" element={<ManageIssuers />} />
@@ -29,6 +28,7 @@ const Main = () => {
       {/* Issuer Routes */}
       <Route path="/issue" element={<IssueCertificate />} />
       <Route path="/revoke" element={<BurnCertificate />} />
+      <Route path="/issuer_profile" element={<IssuerProfile />} />
     </Routes>
   );
 };

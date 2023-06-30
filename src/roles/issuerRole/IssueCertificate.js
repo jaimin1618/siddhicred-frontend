@@ -1,7 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 import Interface from "../../utilities/contract/";
-
 
 const IssueCertificate = () => {
   const [mintInfo, setMintInfo] = useState({
