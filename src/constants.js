@@ -17,7 +17,7 @@ const issuerNavigations = [
   { name: "Home", href: "/home" },
   { name: "Issue", href: "/issue" },
   { name: "Revoke", href: "/revoke" },
-  { name: "Profile", href: "/profile" },
+  { name: "Profile", href: "/issuer/profile" },
 ];
 /*================================
 Home => Dashboard to view total issued certificates, types of certificate issued

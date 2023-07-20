@@ -7,13 +7,17 @@ const abi = _abi.abi;
 Basic Wallet and Wallet address functions
 ==========================================*/
 async function requestAccounts() {
-  if (window.ethereum) {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    return provider.getSigner();
+  let provider;
+  if (window.ethereum == null) {
+    console.log("MetaMask not installed; using read-only defaults");
+    provider = ethers.getDefaultProvider();
   } else {
-    alert("Install Metamask Wallet to run the application");
+    provider = new ethers.BrowserProvider(window.ethereum);
   }
+
+  // const url = "http://127.0.0.1:8545/";
+  // provider = new ethers.JsonRpcProvider(url);
+  return provider.getSigner();
 }
 
 export default requestAccounts;

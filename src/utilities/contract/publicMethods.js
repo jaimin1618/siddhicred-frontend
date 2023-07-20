@@ -54,7 +54,6 @@ async function getWalletAddressRole(walletAddress) {
   const signer = await requestAccounts();
   const contract = new ethers.Contract(address, abi, signer);
   const walletAddressRole = await contract.getWalletAddressRole(walletAddress);
-  console.log(walletAddressRole);
   return walletAddressRole;
 }
 

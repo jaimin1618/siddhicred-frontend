@@ -1,15 +1,38 @@
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 import User from "../../context/User";
-import Interface from "../../utilities/contract/";
+import Interface from "../../utilities/contract";
 
 const IssuerProfile = () => {
   const { address, role } = useContext(User);
-  console.log(role);
+  const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
+  const [profileImage, setProfileImage] = useState(null);
+  const [profile, setProfile] = useState({
+    address: "",
+    profileImageURL: "",
+    issuerName: "",
+    organizationName: "",
+    description: "",
+    country: "",
+    contact: "",
+    website: "",
+    becameIssuerOn: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setProfile({
+      ...profile,
+      [name]: value,
+    });
+  };
 
   useEffect(() => {
     const getIssuerInfo = async () => {
+      if (!address) return;
       const res = await Interface.Public.getIssuerInfo(address);
       console.log(res);
 
@@ -19,34 +42,38 @@ const IssuerProfile = () => {
           hideProgressBar: true,
           autoClose: 3000,
         });
-
         return;
       }
+
+      const { IpfsHash } = res;
+      const httpRes = await axios.get(GATEWAY + IpfsHash);
+      const json = httpRes.data;
+      console.log(httpRes.data);
+      setProfile(json);
 
       toast.success(res.Message, {
         position: toast.POSITION.TOP_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
-
-      console.log(res);
     };
 
     getIssuerInfo();
-  }, []);
-
-  const handleInputChange = () => {};
+  }, [address]);
 
   return (
-    <div className="h-5/6 p-3 bg-gray-100 flex items-center justify-center mt-24">
+    <div className="h-5/6 p-3 bg-gray-100 font-medium flex items-center justify-center mt-24">
       <div className="container max-w-screen-lg mx-auto">
         <div>
           <div className="bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14">
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
-              {/* profile picture upload */}
               <div className="text-gray-600">
                 <img
-                  src="/notfound.png"
+                  src={
+                    profile.profileImageURL
+                      ? profile.profileImageURL
+                      : "/notfound.png"
+                  }
                   className="bg-red-400 w-1/2 m-auto rounded-full"
                   alt="Avatar"
                 />
@@ -77,7 +104,12 @@ const IssuerProfile = () => {
                               Attach a file
                             </p>
                           </div>
-                          <input type="file" className="opacity-0" />
+                          <input
+                            name="profileImage"
+                            type="file"
+                            className="opacity-0"
+                            onChange={(e) => setProfileImage(e.target.files[0])}
+                          />
                         </label>
                       </div>
                     </div>
@@ -90,12 +122,12 @@ const IssuerProfile = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization Name</label>
                     <input
+                      onChange={(e) => handleInputChange(e)}
+                      name="organizationName"
                       type="text"
-                      name="address"
-                      id="address"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      value={profile.organizationName}
+                      placeholder="Apple Inc."
                     />
                   </div>
 
@@ -104,67 +136,85 @@ const IssuerProfile = () => {
                       Issuer Name (from organization)
                     </label>
                     <input
+                      // disabled
+                      onChange={(e) => handleInputChange(e)}
                       type="text"
-                      name="city"
-                      id="city"
+                      name="issuerName"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      value={profile.issuerName}
+                      placeholder="Jane Doe"
                     />
                   </div>
 
                   <div className="md:col-span-5">
                     <label htmlFor="full_name">Issuer Public Address</label>
                     <input
-                      type="text"
-                      id="full_name"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                       disabled
-                      value={address}
-                      name="issuerName"
+                      onChange={(e) => handleInputChange(e)}
+                      name="address"
+                      type="text"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
+                      placeholder="0xf39Fd6e51..."
+                      value={profile.address}
                     />
                   </div>
 
                   <div className="md:col-span-5">
                     <label htmlFor="email">Contact Email Address</label>
                     <input
+                      onChange={(e) => handleInputChange(e)}
+                      name="contact"
+                      value={profile.contact}
                       type="text"
-                      name="email"
-                      id="email"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
                       placeholder="email@domain.com"
                     />
                   </div>
 
                   <div className="md:col-span-3">
-                    <label htmlFor="address">Organization Website</label>
+                    <label htmlFor="address">Organization website</label>
                     <input
+                      onChange={(e) => handleInputChange(e)}
+                      name="website"
+                      profile={profile.website}
                       type="text"
-                      name="address"
-                      id="address"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      value={profile.website}
+                      placeholder="https://myorganization.com"
                     />
                   </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="city">Country</label>
                     <input
+                      onChange={(e) => handleInputChange(e)}
+                      name="country"
+                      value={profile.country}
                       type="text"
-                      name="city"
-                      id="city"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      placeholder="India"
+                    />
+                  </div>
+
+                  <div className="md:col-span-5">
+                    <label>Organization description </label>
+                    <textarea
+                      onChange={(e) => handleInputChange(e)}
+                      name="description"
+                      value={profile.description}
+                      type="text"
+                      className="h-24 border mt-1 rounded px-4 w-full bg-gray-50"
+                      placeholder="More information about organization..."
                     />
                   </div>
 
                   <div className="md:col-span-5 text-right">
                     <div className="inline-flex items-end">
-                      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded">
-                        Update Profile
+                      <button
+                        // onClick={() => handleButtonClick()}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded"
+                      >
+                        Update Issuer
                       </button>
                     </div>
                   </div>
@@ -173,18 +223,6 @@ const IssuerProfile = () => {
             </div>
           </div>
         </div>
-
-        <a
-          href="https://www.buymeacoffee.com/dgauderman"
-          target="_blank"
-          className="md:absolute bottom-0 right-0 p-4 float-right"
-        >
-          <img
-            src="https://www.buymeacoffee.com/assets/img/guidelines/logo-mark-3.svg"
-            alt="Buy Me A Coffee"
-            className="transition-all rounded-full w-14 -rotate-45 hover:shadow-sm shadow-lg ring hover:ring-4 ring-white"
-          />
-        </a>
       </div>
     </div>
   );

@@ -36,8 +36,8 @@ class Issuer {
     this.organizationName = organizationName;
     this.description = description;
     this.country = country;
-    this.organizationContactEmail = contact;
-    this.organizationWebsite = website;
+    this.contact = contact;
+    this.website = website;
     this.becameIssuerOn = new Date();
   }
 }

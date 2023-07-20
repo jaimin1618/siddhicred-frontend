@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 // user routes
 import Issued from "./default/Issued";
 import Home from "./default/Home";
-import IssuerProfile from "./issuerRole/Profile";
+import IssuerProfile from "./issuerRole/IssuerProfile";
 import Search from "./default/Search";
 
 // admin routes
@@ -28,7 +28,7 @@ const Main = () => {
       {/* Issuer Routes */}
       <Route path="/issue" element={<IssueCertificate />} />
       <Route path="/revoke" element={<BurnCertificate />} />
-      <Route path="/issuer_profile" element={<IssuerProfile />} />
+      <Route path="/issuer/profile" element={<IssuerProfile />} />
     </Routes>
   );
 };

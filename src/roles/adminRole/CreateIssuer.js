@@ -55,12 +55,11 @@ const CreateIssuer = () => {
   const handleButtonClick = async () => {
     // upload profile picture on IPFS and get CID
     const upload = await uploadProfileImage();
-    console.log(upload);
 
     // IF: profile image upload fails
     if (upload.Status === "Error") {
       toast.error("Error! Failed to upload Issuer profile picture to IPFS.", {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
@@ -70,7 +69,7 @@ const CreateIssuer = () => {
 
     // IF: profile image upload success
     toast.success("Success! Issuer profile picture uploaded successfully.", {
-      position: toast.POSITION.TOP_CENTER,
+      position: toast.POSITION.BOTTOM_CENTER,
       hideProgressBar: true,
       autoClose: 3000,
     });
@@ -85,10 +84,10 @@ const CreateIssuer = () => {
     const issuer = new Issuer(profile);
     const uploadJson = await IPFS.pinJson(issuer);
 
-    // IF: profile image upload fails
+    // IF: Json upload fails
     if (uploadJson.Status === "Error") {
       toast.error("Error! Uploading new Issuer content to IPFS failed.", {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
@@ -98,7 +97,7 @@ const CreateIssuer = () => {
 
     // IF: profile image upload success
     toast.success("Success! Issuer Content uploaded to IPFS successfully.", {
-      position: toast.POSITION.TOP_CENTER,
+      position: toast.POSITION.BOTTOM_CENTER,
       hideProgressBar: true,
       autoClose: 3000,
     });
@@ -109,23 +108,19 @@ const CreateIssuer = () => {
       uploadJson.IpfsHash
     );
 
-    console.log(uploadJson);
-
     if (res.Status === "Error") {
       toast.error(res.Message, {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
     } else if (res.Status === "Success") {
       toast.success(res.Message, {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
     }
-
-    console.log(res);
   };
 
   return (
@@ -264,7 +259,7 @@ const CreateIssuer = () => {
                       name="description"
                       value={profile.description}
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-24 border mt-1 rounded px-4 w-full bg-gray-50"
                       placeholder="More information about organization..."
                     />
                   </div>
@@ -284,18 +279,6 @@ const CreateIssuer = () => {
             </div>
           </div>
         </div>
-
-        <a
-          href="https://www.buymeacoffee.com/dgauderman"
-          target="_blank"
-          className="md:absolute bottom-0 right-0 p-4 float-right"
-        >
-          <img
-            src="https://www.buymeacoffee.com/assets/img/guidelines/logo-mark-3.svg"
-            alt="Buy Me A Coffee"
-            className="transition-all rounded-full w-14 -rotate-45 hover:shadow-sm shadow-lg ring hover:ring-4 ring-white"
-          />
-        </a>
       </div>
     </div>
   );

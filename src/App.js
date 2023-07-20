@@ -28,7 +28,6 @@ const App = () => {
       else setRole(ROLES.USER);
 
       const count = await Interface.Public.countIssuedCertificates(address);
-      console.log("owned: ", count);
     };
 
     setAccessRole();
