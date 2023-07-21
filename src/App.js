@@ -9,7 +9,6 @@ import Main from "./roles/Main";
 import { ROLES } from "./constants";
 import Interface from "./utilities/contract/index";
 import User from "./context/User";
-console.log(Interface);
 
 const App = () => {
   // connect the wallet and see, what's the role of current user

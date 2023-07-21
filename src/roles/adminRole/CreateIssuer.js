@@ -21,6 +21,10 @@ const CreateIssuer = () => {
   });
   const [profileImage, setProfileImage] = useState(null);
 
+  const handleFileChange = (e) => {
+    setProfileImage(e.target.files[0]);
+  };
+
   const uploadProfileImage = async () => {
     const image = new FormData();
     const fileName = `siddhicred-issuer-profile-picture-${profile.address}`;
@@ -129,14 +133,20 @@ const CreateIssuer = () => {
         <div>
           <div className="bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14">
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
-              <div className="text-gray-600">
-                <img
-                  src="/notfound.png"
-                  className="bg-red-400 w-1/2 m-auto rounded-full"
-                  alt="Avatar"
-                />
-                <div className="flex justify-center mt-8">
-                  <div className="max-w-2xl rounded-lg shadow-xl bg-gray-50">
+              <div className="text-gray-600flex-col">
+                <div className="h-2/3 p-5">
+                  <img
+                    src={
+                      profileImage
+                        ? URL.createObjectURL(profileImage)
+                        : "/notfound.png"
+                    }
+                    className="rounded-sm h-full"
+                    alt="Avatar"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <div className="max-w-2xl rounded-sm shadow-xl bg-gray-50">
                     <div className="m-4">
                       <label className="inline-block mb-2 text-gray-500">
                         Upload Profile Picture
@@ -166,7 +176,7 @@ const CreateIssuer = () => {
                             name="profileImage"
                             type="file"
                             className="opacity-0"
-                            onChange={(e) => setProfileImage(e.target.files[0])}
+                            onChange={(e) => handleFileChange(e)}
                           />
                         </label>
                       </div>
@@ -175,7 +185,7 @@ const CreateIssuer = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 mt-10 md:mt-3">
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization Name</label>

@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StatusBar from "./StatusBar";
 import IssuerTable from "./IssuerTable";
+import Interface from "../../../utilities/contract";
 
 const DashboardMain = () => {
-  // get issuers and list them here
+  const [issuers, setIssuers] = useState([]);
+
+  useEffect(() => {
+    const getIssuersList = async () => {
+      const issuers = await Interface.Admin.getIssuersList();
+      console.log(issuers);
+    };
+
+    getIssuersList();
+  }, []);
 
   return (
     <div className="mt-24 flex flex-col flex-1 w-full bg-gray-100">

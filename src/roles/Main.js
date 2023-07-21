@@ -12,6 +12,7 @@ import DashboardMain from "./adminRole/Dashboard/DashboardMain";
 import ManageIssuers from "./adminRole/ManageIssuers";
 import IssueCertificate from "./issuerRole/IssueCertificate";
 import BurnCertificate from "./issuerRole/burnCertificate";
+import CreateIssuer from "./adminRole/CreateIssuer";
 
 const Main = () => {
   return (
@@ -22,7 +23,7 @@ const Main = () => {
       <Route path="/search" element={<Search />} />
 
       {/* Admin Routes */}
-      <Route path="/manage_issuers" element={<ManageIssuers />} />
+      <Route path="/create_issuer" element={<CreateIssuer />} />
       <Route path="/dashboard" element={<DashboardMain />} />
 
       {/* Issuer Routes */}

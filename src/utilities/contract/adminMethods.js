@@ -42,10 +42,18 @@ async function createIssuer(walletAddress, cid) {
 async function removeIssuer(walletAddress, tokenId) {}
 async function updateIssuer(walletAddress, tokenId) {}
 
+async function getIssuersList() {
+  const signer = await requestAccounts();
+  const contract = new ethers.Contract(address, abi, signer);
+  const issuers = await contract.getIssuersList();
+  return issuers;
+}
+
 const _ = {
   createIssuer,
   removeIssuer,
   updateIssuer,
+  getIssuersList,
 };
 
 export default _;
