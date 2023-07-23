@@ -85,6 +85,13 @@ async function tokenURI(tokenId) {
   return uri;
 }
 
+async function totalSupply() {
+  const signer = await requestAccounts();
+  const contract = new ethers.Contract(address, abi, signer);
+  const total = await contract.totalSupply();
+  return total;
+}
+
 const _ = {
   getAddress,
   getAdmin,
@@ -95,6 +102,7 @@ const _ = {
   countIssuedCertificates,
   getUserTokenIds,
   tokenURI,
+  totalSupply,
 };
 
 export default _;

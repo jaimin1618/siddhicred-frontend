@@ -7,6 +7,7 @@ import { Issuer } from "../../utilities/templates";
 import IPFS from "../../utilities/ipfs/pinata";
 
 const CreateIssuer = () => {
+  const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const { address } = useContext(User);
   const [issuerAddr, setIssuerAddr] = useState("");
   const [profile, setProfile] = useState({
@@ -81,7 +82,7 @@ const CreateIssuer = () => {
     // create Issuer content JSON
     setProfile({
       ...profile,
-      profileImageURL: `${process.env.REACT_APP_IPFS_PUBLIC_GATEWAY}ipfs/${upload.IpfsHash}`,
+      profileImageURL: GATEWAY + upload.IpfsHash,
     });
 
     // upload Issuer content JSON

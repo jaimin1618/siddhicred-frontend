@@ -39,13 +39,20 @@ async function createIssuer(walletAddress, cid) {
     Message: "Issuer created successfully",
   };
 }
+
 async function removeIssuer(walletAddress, tokenId) {}
 async function updateIssuer(walletAddress, tokenId) {}
 
 async function getIssuersList() {
   const signer = await requestAccounts();
-  const contract = new ethers.Contract(address, abi, signer);
-  const issuers = await contract.getIssuersList();
+  let issuers;
+  try {
+    const contract = new ethers.Contract(address, abi, signer);
+    console.log(contract);
+    issuers = await contract.getIssuersList();
+  } catch (e) {
+    console.log("error: ", e);
+  }
   return issuers;
 }
 
