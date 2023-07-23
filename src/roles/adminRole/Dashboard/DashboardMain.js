@@ -4,11 +4,13 @@ import axios from "axios";
 import StatusBar from "./StatusBar";
 import IssuerTable from "./IssuerTable";
 import Interface from "../../../utilities/contract/index";
+import { ThreeDots } from "react-loader-spinner";
 
 const DashboardMain = () => {
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [issuers, setIssuers] = useState([]);
   const [totalSupply, setTotalSupply] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getIssuersAddress = async () => {
@@ -41,12 +43,16 @@ const DashboardMain = () => {
     };
 
     const main = async () => {
+      setIsLoading(true);
       // getting issuer content
       const issuersAddresses = await getIssuersAddress();
       const issuerIPFSCid = await getIssuerIPFSCid(issuersAddresses);
       const issuerContent = await getIssuersIPFSContent(issuerIPFSCid);
-      // console.log(issuerContent);
+      console.log(issuerContent);
       setIssuers(issuerContent);
+
+      setTimeout(() => setIsLoading(false), 2000);
+      // setIsLoading(false);
 
       // getting total supply
       getTotalSupply();
@@ -54,6 +60,86 @@ const DashboardMain = () => {
 
     main();
   }, []);
+
+  const renderIssuers = () => {
+    if (isLoading)
+      return (
+        <tr className="text-gray-700 dark:text-gray-400">
+          <td colSpan={5} className="px-4 py-3 text-sm">
+            <ThreeDots
+              height="80"
+              width="80"
+              radius="9"
+              color="#4fa94d"
+              ariaLabel="three-dots-loading"
+              className=""
+              visible={true}
+            />
+          </td>
+        </tr>
+      );
+
+    if (issuers && issuers.length > 0) {
+      return issuers.map((issuer, idx) => (
+        <tr key={idx} className="text-gray-700 dark:text-gray-400">
+          <td className="px-4 py-3">
+            <div className="flex items-center text-sm">
+              {/* <!-- Avatar with inset shadow --> */}
+              <div className="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                <img
+                  className="object-cover w-full h-full rounded-full"
+                  src={
+                    issuer.profileImageURL
+                      ? issuer.profileImageURL
+                      : "/images/dummyProfile.webp"
+                  }
+                  alt=""
+                  loading="lazy"
+                />
+                <div
+                  className="absolute inset-0 rounded-full shadow-inner"
+                  aria-hidden="true"
+                ></div>
+              </div>
+              <div>
+                <p className="font-semibold">{issuer.issuerName}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  {issuer.address.substring(0, 10) + "..."}
+                </p>
+              </div>
+            </div>
+          </td>
+          <td className="px-4 py-3 text-sm">{issuer.organizationName}</td>
+          <td className="px-4 py-3 text-sm">
+            <a
+              className="bg-blue-300 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-500 font-semibold rounded-sm "
+              target="_blank"
+              href={issuer.website}
+            >
+              Link
+            </a>
+          </td>
+
+          <td className="px-4 py-3 text-sm">
+            {new Date(issuer.becameIssuerOn).toDateString()}
+          </td>
+          <td className="px-4 py-3 text-sm">
+            <a
+              className="bg-green-300 pt-2 pb-2 pl-3 pr-3 hover:bg-green-500 font-semibold rounded-sm "
+              target="_blank"
+              href={issuer.website}
+            >
+              View
+            </a>
+          </td>
+        </tr>
+      ));
+    }
+
+    return (
+      <tr className="text-gray-700 dark:text-gray-400">No Issuer Found</tr>
+    );
+  };
 
   return (
     <div className="mt-24 flex flex-col flex-1 w-full bg-gray-100">
@@ -165,13 +251,14 @@ const DashboardMain = () => {
                     <th className="px-4 py-3">Issuer</th>
                     <th className="px-4 py-3">Organization name</th>
                     <th className="px-4 py-3">Organization website</th>
-                    <th className="px-4 py-3">Status</th>
+                    {/* <th className="px-4 py-3">Status</th> */}
                     <th className="px-4 py-3">Created ON</th>
                     <th className="px-4 py-3">View More</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                  {issuers &&
+                  {renderIssuers()}
+                  {/* {issuers &&
                     issuers.map((issuer, idx) => (
                       <tr
                         key={idx}
@@ -179,7 +266,6 @@ const DashboardMain = () => {
                       >
                         <td className="px-4 py-3">
                           <div className="flex items-center text-sm">
-                            {/* <!-- Avatar with inset shadow --> */}
                             <div className="relative hidden w-8 h-8 mr-3 rounded-full md:block">
                               <img
                                 className="object-cover w-full h-full rounded-full"
@@ -218,11 +304,7 @@ const DashboardMain = () => {
                             Link
                           </a>
                         </td>
-                        <td className="px-4 py-3 text-xs">
-                          <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            Approved
-                          </span>
-                        </td>
+
                         <td className="px-4 py-3 text-sm">
                           {new Date(issuer.becameIssuerOn).toDateString()}
                         </td>
@@ -236,7 +318,7 @@ const DashboardMain = () => {
                           </a>
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
                 </tbody>
               </table>
             </div>

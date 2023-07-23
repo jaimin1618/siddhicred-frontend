@@ -80,13 +80,15 @@ const CreateIssuer = () => {
     });
 
     // create Issuer content JSON
-    setProfile({
+    const newProfile = {
       ...profile,
       profileImageURL: GATEWAY + upload.IpfsHash,
-    });
+    };
+    console.log(newProfile);
+    setProfile(newProfile);
 
     // upload Issuer content JSON
-    const issuer = new Issuer(profile);
+    const issuer = new Issuer(newProfile);
     const uploadJson = await IPFS.pinJson(issuer);
 
     // IF: Json upload fails

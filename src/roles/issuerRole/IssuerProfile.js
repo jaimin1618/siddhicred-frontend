@@ -38,7 +38,7 @@ const IssuerProfile = () => {
 
       if (res.Status === "Error") {
         toast.error(res.Message, {
-          position: toast.POSITION.TOP_CENTER,
+          position: toast.POSITION.BOTTOM_CENTER,
           hideProgressBar: true,
           autoClose: 3000,
         });
@@ -52,7 +52,7 @@ const IssuerProfile = () => {
       setProfile(json);
 
       toast.success(res.Message, {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });

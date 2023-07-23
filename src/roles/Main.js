@@ -6,12 +6,15 @@ import Issued from "./default/Issued";
 import Home from "./default/Home";
 import IssuerProfile from "./issuerRole/IssuerProfile";
 import Search from "./default/Search";
+import CertificateInfo from "./default/CertificateInfo";
+
+// issuer routes
+import IssueCertificate from "./issuerRole/IssueCertificate";
+import BurnCertificate from "./issuerRole/burnCertificate";
 
 // admin routes
 import DashboardMain from "./adminRole/Dashboard/DashboardMain";
 import ManageIssuers from "./adminRole/ManageIssuers";
-import IssueCertificate from "./issuerRole/IssueCertificate";
-import BurnCertificate from "./issuerRole/burnCertificate";
 import CreateIssuer from "./adminRole/CreateIssuer";
 
 const Main = () => {
@@ -21,6 +24,7 @@ const Main = () => {
       <Route path="/issued" element={<Issued />} />
       <Route path="/home" element={<Home />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/certificate/:id" element={<CertificateInfo />} />
 
       {/* Admin Routes */}
       <Route path="/create_issuer" element={<CreateIssuer />} />
