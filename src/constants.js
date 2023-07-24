@@ -26,7 +26,7 @@ Profile => Admin user account details, name, and more
 
 const defaultNavigations = [
   { name: "Home", href: "/home" },
-  { name: "Search Certificate", href: "/search" },
+  // { name: "Search Certificate", href: "/search" },
   { name: "Issued", href: "/issued" },
   { name: "Profile", href: "/profile" },
 ];

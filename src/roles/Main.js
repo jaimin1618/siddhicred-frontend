@@ -7,6 +7,7 @@ import Home from "./default/Home";
 import IssuerProfile from "./issuerRole/IssuerProfile";
 import Search from "./default/Search";
 import CertificateInfo from "./default/CertificateInfo";
+import UserProfile from "./default/UserProfile";
 
 // issuer routes
 import IssueCertificate from "./issuerRole/IssueCertificate";
@@ -23,8 +24,9 @@ const Main = () => {
       {/* User Routes */}
       <Route path="/issued" element={<Issued />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/search" element={<Search />} />
+      {/* <Route path="/search" element={<Search />} /> */}
       <Route path="/certificate/:id" element={<CertificateInfo />} />
+      <Route path="/profile" element={<UserProfile />} />
 
       {/* Admin Routes */}
       <Route path="/create_issuer" element={<CreateIssuer />} />
