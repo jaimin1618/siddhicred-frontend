@@ -84,7 +84,29 @@ async function burnCertificate(tokenId) {
   };
 }
 
+const getIssuedTokenList = async () => {
+  const signer = await requestAccounts();
+  let tokens;
+  try {
+    const contract = new ethers.Contract(address, abi, signer);
+    tokens = await contract.getIssuedTokenList();
+  } catch (e) {
+    if (process.env.REACT_APP_ENVIRONMENT === "development") console.log(e);
+    return {
+      Status: "Error",
+      Message: "Failed to find issued tokens, Server Error!",
+    };
+  }
+
+  return {
+    Status: "Success",
+    Message: `${tokens.length} issued tokens found`,
+    Data: tokens,
+  };
+};
+
 const _ = {
+  getIssuedTokenList,
   issueCertificate,
   burnCertificate,
 };

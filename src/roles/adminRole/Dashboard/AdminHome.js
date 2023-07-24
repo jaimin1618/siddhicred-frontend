@@ -6,7 +6,7 @@ import IssuerTable from "./IssuerTable";
 import Interface from "../../../utilities/contract/index";
 import { ThreeDots } from "react-loader-spinner";
 
-const DashboardMain = () => {
+const AdminHome = () => {
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [issuers, setIssuers] = useState([]);
   const [totalSupply, setTotalSupply] = useState(0);
@@ -455,4 +455,4 @@ const DashboardMain = () => {
   );
 };
 
-export default DashboardMain;
+export default AdminHome;
