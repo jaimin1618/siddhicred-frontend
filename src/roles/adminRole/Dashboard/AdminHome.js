@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
-import StatusBar from "./StatusBar";
-import IssuerTable from "./IssuerTable";
 import Interface from "../../../utilities/contract/index";
 import { ThreeDots } from "react-loader-spinner";
 
@@ -12,10 +11,40 @@ const AdminHome = () => {
   const [totalSupply, setTotalSupply] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleIssuerRemoveButton = async (walletAddress) => {
+    const res = await Interface.Admin.removeIssuer(walletAddress);
+    if (res.Status === "Error") {
+      // IF: Issuer remove failed!
+      toast.error(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // IF: Issuer removed successfully!
+    toast.success(res.Message, {
+      position: toast.POSITION.BOTTOM_CENTER,
+      hideProgressBar: true,
+      autoClose: 3000,
+    });
+
+    // clean-up of issuer content from IPFS (deal with it later!)
+
+    // clean-up of issue from react-status on Success
+    const newIssuersList = issuers.filter((issuer) => {
+      console.log(issuer.address, walletAddress);
+      return issuer.address !== walletAddress;
+    });
+
+    setIssuers(newIssuersList);
+  };
+
   useEffect(() => {
     const getIssuersAddress = async () => {
       const issuers = await Interface.Admin.getIssuersList();
-      console.log(issuers);
       return issuers;
     };
 
@@ -51,8 +80,8 @@ const AdminHome = () => {
 
       setIssuers(issuerContent);
 
-      setTimeout(() => setIsLoading(false), 2000);
-      // setIsLoading(false);
+      // setTimeout(() => setIsLoading(false), 2000);
+      setIsLoading(false);
 
       // getting total supply
       getTotalSupply();
@@ -65,7 +94,7 @@ const AdminHome = () => {
     if (isLoading)
       return (
         <tr className="text-gray-700 dark:text-gray-400 w-full">
-          <td colSpan={5} className="flex-col p-5 font-medium">
+          <td colSpan={6} className="flex-col p-5 font-medium">
             <ThreeDots
               height="50"
               width="50"
@@ -126,19 +155,21 @@ const AdminHome = () => {
             </div>
           </td>
           <td className="px-4 py-3 text-sm">{issuer.organizationName}</td>
-          <td className="px-4 py-3 text-sm">
-            <a
-              className="bg-blue-300 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-500 font-semibold rounded-sm "
-              target="_blank"
-              href={issuer.website}
-            >
-              Link
-            </a>
-          </td>
 
           <td className="px-4 py-3 text-sm">
             {new Date(issuer.becameIssuerOn).toDateString()}
           </td>
+
+          <td className="px-4 py-3 text-sm">
+            <a
+              className="text-blue-800 underline underline-offset-4 pt-2 pb-2 pl-3 pr-3 hover:font-bold font-semibold rounded-sm "
+              target="_blank"
+              href={issuer.website}
+            >
+              Website
+            </a>
+          </td>
+
           <td className="px-4 py-3 text-sm">
             <a
               className="bg-green-300 pt-2 pb-2 pl-3 pr-3 hover:bg-green-500 font-semibold rounded-sm "
@@ -148,13 +179,23 @@ const AdminHome = () => {
               View
             </a>
           </td>
+
+          <td className="px-4 py-3 text-sm">
+            <a
+              className="bg-red-300 pt-2 pb-2 pl-3 pr-3 hover:bg-red-500 font-semibold rounded-sm hover:cursor-pointer"
+              target="_blank"
+              onClick={() => handleIssuerRemoveButton(issuer.address)}
+            >
+              Remove
+            </a>
+          </td>
         </tr>
       ));
     }
 
     return (
       <tr className="text-gray-700 dark:text-gray-400 w-full">
-        <td colSpan={5} className="flex-col p-5 text-center font-medium">
+        <td colSpan={6} className="flex-col p-5 text-center font-medium">
           No Issuer Found
         </td>
       </tr>
@@ -217,7 +258,7 @@ const AdminHome = () => {
               </div>
             </div>
             {/* <!-- Card --> */}
-            <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+            {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500">
                 <svg
                   className="w-5 h-5"
@@ -235,9 +276,9 @@ const AdminHome = () => {
                   376
                 </p>
               </div>
-            </div>
+            </div> */}
             {/* <!-- Card --> */}
-            <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+            {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500">
                 <svg
                   className="w-5 h-5"
@@ -259,7 +300,7 @@ const AdminHome = () => {
                   35
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* <!-- New Table --> */}
@@ -270,10 +311,11 @@ const AdminHome = () => {
                   <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                     <th className="px-4 py-3">Issuer</th>
                     <th className="px-4 py-3">Organization name</th>
+                    <th className="px-4 py-3">Created ON</th>
                     <th className="px-4 py-3">Organization website</th>
                     {/* <th className="px-4 py-3">Status</th> */}
-                    <th className="px-4 py-3">Created ON</th>
-                    <th className="px-4 py-3">View More</th>
+                    <th className="px-4 py-3"></th>
+                    <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">

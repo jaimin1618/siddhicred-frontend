@@ -4,6 +4,8 @@ import axios from "axios";
 
 import User from "../../context/User";
 import Interface from "../../utilities/contract";
+import IPFS from "../../utilities/ipfs/pinata";
+import { Issuer } from "../../utilities/templates";
 
 const IssuerProfile = () => {
   const { address, role } = useContext(User);
@@ -21,6 +23,14 @@ const IssuerProfile = () => {
     becameIssuerOn: "",
   });
 
+  const handleFileChange = (e) => {
+    setProfileImage(e.target.files[0]);
+    setProfile({
+      ...profile,
+      profileImageURL: URL.createObjectURL(e.target.files[0]),
+    });
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -28,6 +38,105 @@ const IssuerProfile = () => {
       ...profile,
       [name]: value,
     });
+  };
+
+  const uploadProfileImage = async () => {
+    const image = new FormData();
+    const fileName = `siddhicred-issuer-profile-picture-${profile.address}-2`;
+
+    // other image metadata and version
+    const metadata = JSON.stringify({
+      name: fileName,
+    });
+    const options = JSON.stringify({
+      cidVersion: 0,
+    });
+
+    image.append("file", profileImage);
+    image.append("pinataMetadata", metadata);
+    image.append("pinataOptions", options);
+    console.log("img: ", image);
+
+    // Now, upload on IPFS and return CID & status
+    const res = await IPFS.pinFile(image);
+    console.log(res);
+
+    return res;
+  };
+
+  const handleIssuerUpdateButton = async () => {
+    // upload profile picture on IPFS and get CID
+    const upload = await uploadProfileImage();
+
+    // IF: profile image upload fails
+    if (upload.Status === "Error") {
+      toast.error("Error! Failed to upload Issuer profile picture to IPFS.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // IF: profile image upload success
+    toast.success("Success! Issuer profile picture uploaded successfully.", {
+      position: toast.POSITION.BOTTOM_CENTER,
+      hideProgressBar: true,
+      autoClose: 3000,
+    });
+
+    // create Issuer content JSON
+    const newProfile = {
+      ...profile,
+      profileImageURL: GATEWAY + upload.IpfsHash,
+    };
+    // console.log(newProfile);
+    setProfile(newProfile);
+
+    // upload Issuer content JSON
+    const issuer = new Issuer(newProfile);
+    const uploadJson = await IPFS.pinJson(issuer);
+
+    // IF: Json upload fails
+    if (uploadJson.Status === "Error") {
+      toast.error("Error! Uploading new Issuer content to IPFS failed.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // IF: profile image upload success
+    toast.success("Success! Issuer Content uploaded to IPFS successfully.", {
+      position: toast.POSITION.BOTTOM_CENTER,
+      hideProgressBar: true,
+      autoClose: 3000,
+    });
+
+    // update contract state with Issuer address and CID
+    const res = await Interface.Admin.updateIssuer(
+      issuer.address,
+      uploadJson.IpfsHash
+    );
+
+    if (res.Status === "Error") {
+      toast.error(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+    } else if (res.Status === "Success") {
+      toast.success(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      // IF: Successfully removed, perform clean-up on IPFS (deal with this later!)
+    }
   };
 
   useEffect(() => {
@@ -105,10 +214,11 @@ const IssuerProfile = () => {
                             </p>
                           </div>
                           <input
+                            disabled
                             name="profileImage"
                             type="file"
                             className="opacity-0"
-                            onChange={(e) => setProfileImage(e.target.files[0])}
+                            onChange={(e) => handleFileChange(e)}
                           />
                         </label>
                       </div>
@@ -122,6 +232,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization Name</label>
                     <input
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       name="organizationName"
                       type="text"
@@ -136,7 +247,7 @@ const IssuerProfile = () => {
                       Issuer Name (from organization)
                     </label>
                     <input
-                      // disabled
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       type="text"
                       name="issuerName"
@@ -162,6 +273,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-5">
                     <label htmlFor="email">Contact Email Address</label>
                     <input
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       name="contact"
                       value={profile.contact}
@@ -174,6 +286,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Organization website</label>
                     <input
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       name="website"
                       profile={profile.website}
@@ -187,6 +300,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-2">
                     <label htmlFor="city">Country</label>
                     <input
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       name="country"
                       value={profile.country}
@@ -199,6 +313,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-5">
                     <label>Organization description </label>
                     <textarea
+                      disabled
                       onChange={(e) => handleInputChange(e)}
                       name="description"
                       value={profile.description}
@@ -211,7 +326,7 @@ const IssuerProfile = () => {
                   <div className="md:col-span-5 text-right">
                     <div className="inline-flex items-end">
                       <button
-                        // onClick={() => handleButtonClick()}
+                        onClick={() => handleIssuerUpdateButton()}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded"
                       >
                         Update Issuer

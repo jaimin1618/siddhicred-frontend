@@ -37,6 +37,7 @@ async function pinFile(formData) {
       IpfsHash: res.data.IpfsHash,
     };
   } catch (error) {
+    if (process.env.REACT_APP_ENVIRONMENT === "development") console.log(error);
     return {
       Status: "Error",
       Message: "Uploading file to IPFS failed",
@@ -59,7 +60,7 @@ async function pinJson(json) {
 
   try {
     const res = await axios(config);
-    console.log(res.data);
+    // console.log(res.data);
 
     return {
       Status: "Success",

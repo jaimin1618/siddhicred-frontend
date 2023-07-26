@@ -16,7 +16,7 @@ Profile => Admin user account details, name, and more
 const issuerNavigations = [
   { name: "Home", href: "/" },
   { name: "Issue", href: "/issue" },
-  { name: "Revoke", href: "/revoke" },
+  // { name: "Revoke", href: "/revoke" },
   { name: "Profile", href: "/issuer/profile" },
 ];
 /*================================

@@ -6,6 +6,8 @@ import axios from "axios";
 import User from "../../context/User";
 import Interface from "../../utilities/contract/index";
 import { ThreeDots } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const IssuerHome = () => {
   const { address } = useContext(User);
@@ -13,6 +15,36 @@ const IssuerHome = () => {
   const [certificates, setCertificates] = useState([]);
   const [totalSupply, setTotalSupply] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleCertificateRevokeButton = async (tokenId) => {
+    const id = parseInt(tokenId);
+    const res = await Interface.Issuer.burnCertificate(id);
+    if (res.Status === "Error") {
+      // IF: Certificate revoke failed!
+      toast.error(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // IF: certificate revoked successfully
+    toast.success(res.Message, {
+      position: toast.POSITION.BOTTOM_CENTER,
+      hideProgressBar: true,
+      autoClose: 3000,
+    });
+
+    // clean-up of react-status after certificate delete on Success
+    const newCertificateList = certificates.filter(
+      (certificate) => certificate.tokenId !== tokenId
+    );
+
+    setCertificates(newCertificateList);
+  };
 
   useEffect(() => {
     const getTokenIds = async (address) => {
@@ -39,11 +71,12 @@ const IssuerHome = () => {
     };
 
     const main = async () => {
+      setIsLoading(true);
       const ids = await getTokenIds(address);
       const tokenURIs = await getTokenURIs(ids);
       const result = await getTokenIPFSContent(tokenURIs);
-      console.log(result);
       setCertificates(result);
+      setIsLoading(false);
     };
 
     main();
@@ -53,14 +86,14 @@ const IssuerHome = () => {
     if (isLoading)
       return (
         <tr className="text-gray-700 dark:text-gray-400">
-          <td colSpan={5} className="px-4 py-3 text-sm">
+          <td colSpan={6} className="px-4 py-3 text-sm flex-col align-middle">
             <ThreeDots
               height="80"
               width="80"
               radius="9"
               color="#4fa94d"
               ariaLabel="three-dots-loading"
-              className=""
+              // className=""
               visible={true}
             />
           </td>
@@ -102,15 +135,27 @@ const IssuerHome = () => {
           <td className="px-4 py-3 text-sm">
             {certificate.issuedTo.address.substring(0, 8) + "..."}
           </td>
-          {/* <td className="px-4 py-3 text-sm">
+          <td className="px-4 py-3 text-sm">
             <a
-              className="bg-blue-300 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-500 font-semibold rounded-sm "
+              className="bg-blue-300 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-500 font-semibold rounded-sm flex w-full justify-center"
               target="_blank"
-              href={certificate.website}
+              onClick={() => navigate("/certificate/" + certificate.tokenId)}
+              // href={certificate.website}
             >
-              Link
+              View
             </a>
           </td>
+          <td className="px-4 py-3 text-sm">
+            <a
+              className="bg-red-300 pt-2 pb-2 pl-3 pr-3 hover:bg-red-500 font-semibold rounded-sm flex w-full justify-center cursor-pointer"
+              target="_blank"
+              onClick={() => handleCertificateRevokeButton(certificate.tokenId)}
+              // href={certificate.website}
+            >
+              Revoke
+            </a>
+          </td>
+          {/* 
 
           <td className="px-4 py-3 text-sm">
             {new Date(certificate.becameIssuerOn).toDateString()}
@@ -130,8 +175,8 @@ const IssuerHome = () => {
 
     return (
       <tr className="text-gray-700 dark:text-gray-400">
-        <td colSpan={4} className="px-4 py-3 flex-col font-medium text-center">
-          No Issuer Found
+        <td colSpan={6} className="px-4 py-3 flex-col font-medium text-center">
+          No Certificate Found
         </td>
       </tr>
     );
@@ -142,14 +187,14 @@ const IssuerHome = () => {
       <main className="h-full overflow-y-auto">
         <div className="container px-6 mx-auto grid">
           <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Admin Dashboard
+            Issuer Account Dashboard
           </h2>
           {/* <!-- CTA --> */}
 
           {/* <!-- Cards --> */}
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             {/* <!-- Card --> */}
-            <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+            {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-500">
                 <svg
                   className="w-5 h-5"
@@ -167,7 +212,7 @@ const IssuerHome = () => {
                   {certificates ? certificates.length : 0}
                 </p>
               </div>
-            </div>
+            </div> */}
             {/* <!-- Card --> */}
             <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500">
@@ -185,7 +230,7 @@ const IssuerHome = () => {
               </div>
               <div>
                 <p className="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Total NFT Certificates issued
+                  Total Certificates issued
                 </p>
                 <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
                   {totalSupply}
@@ -193,7 +238,7 @@ const IssuerHome = () => {
               </div>
             </div>
             {/* <!-- Card --> */}
-            <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+            {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500">
                 <svg
                   className="w-5 h-5"
@@ -211,9 +256,9 @@ const IssuerHome = () => {
                   376
                 </p>
               </div>
-            </div>
+            </div> */}
             {/* <!-- Card --> */}
-            <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+            {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
               <div className="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500">
                 <svg
                   className="w-5 h-5"
@@ -235,7 +280,7 @@ const IssuerHome = () => {
                   35
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* <!-- New Table --> */}
@@ -249,6 +294,8 @@ const IssuerHome = () => {
                     <th className="px-4 py-3">Issue date</th>
                     <th className="px-4 py-3">Issued to (name)</th>
                     <th className="px-4 py-3">Issued to (address)</th>
+                    <th className="px-4 py-3"></th>
+                    <th className="px-4 py-3"></th>
 
                     {/* <th className="px-4 py-3">Status</th> */}
                     {/* <th className="px-4 py-3">Created ON</th> */}

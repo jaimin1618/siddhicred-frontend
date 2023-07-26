@@ -32,7 +32,7 @@ async function getIssuerInfo(walletAddress) {
     const signer = await requestAccounts();
     const contract = new ethers.Contract(address, abi, signer);
     const CID = await contract.getIssuerInfo(walletAddress);
-    console.log(CID);
+    // console.log(CID);
 
     return {
       Status: "Success",
@@ -40,7 +40,7 @@ async function getIssuerInfo(walletAddress) {
       IpfsHash: CID,
     };
   } catch (error) {
-    console.log(error);
+    if (process.env.REACT_APP_ENVIRONMENT === "development") console.log(error);
     return {
       Status: "Error",
       Message:

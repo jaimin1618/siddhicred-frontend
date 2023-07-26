@@ -52,9 +52,7 @@ const Main = () => {
       <Route path="/create_issuer" element={<CreateIssuer />} />
 
       {/* Issuer Specific Routes */}
-
       <Route path="/issue" element={<IssueCertificate />} />
-      <Route path="/revoke" element={<BurnCertificate />} />
       <Route path="/issuer/profile" element={<IssuerProfile />} />
     </Routes>
   );

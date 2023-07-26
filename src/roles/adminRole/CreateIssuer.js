@@ -84,7 +84,7 @@ const CreateIssuer = () => {
       ...profile,
       profileImageURL: GATEWAY + upload.IpfsHash,
     };
-    console.log(newProfile);
+    // console.log(newProfile);
     setProfile(newProfile);
 
     // upload Issuer content JSON

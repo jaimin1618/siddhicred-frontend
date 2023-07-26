@@ -40,15 +40,84 @@ async function createIssuer(walletAddress, cid) {
   };
 }
 
-async function removeIssuer(walletAddress, tokenId) {}
-async function updateIssuer(walletAddress, tokenId) {}
+async function removeIssuer(walletAddress) {
+  let status;
+
+  // validate
+  if (!isAddress(walletAddress)) {
+    return {
+      Status: "Error",
+      Message: "Invalid Wallet address provided, provide valid wallet address",
+    };
+  }
+
+  try {
+    const signer = await requestAccounts();
+    const contract = new ethers.Contract(address, abi, signer);
+    const tx = await contract.removeIssuer(walletAddress);
+    await tx.wait();
+  } catch (e) {
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      console.error("Error occured: ", e);
+
+    status = false;
+    return {
+      Status: "Error",
+      Message: "Transaction failed due to some problem, Please try again later",
+    };
+  }
+
+  return {
+    Status: "Success",
+    Message: `Issue with public address: ${walletAddress.substring(
+      0,
+      10
+    )}... has been removed successfully`,
+  };
+}
+
+async function updateIssuer(walletAddress, contentHash) {
+  let status;
+
+  // validate
+  if (!isAddress(walletAddress)) {
+    return {
+      Status: "Error",
+      Message: "Invalid Wallet address provided, provide valid wallet address",
+    };
+  }
+
+  try {
+    const signer = await requestAccounts();
+    const contract = new ethers.Contract(address, abi, signer);
+    const tx = await contract.updateIssuer(walletAddress, contentHash);
+    await tx.wait();
+  } catch (e) {
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      console.error("Error occured: ", e);
+
+    status = false;
+    return {
+      Status: "Error",
+      Message: "Transaction failed due to some problem, Please try again later",
+    };
+  }
+
+  return {
+    Status: "Success",
+    Message: `Issuer with public address: ${walletAddress.substring(
+      0,
+      10
+    )}... has been updated successfully`,
+  };
+}
 
 async function getIssuersList() {
   const signer = await requestAccounts();
   let issuers;
   try {
     const contract = new ethers.Contract(address, abi, signer);
-    console.log(contract);
+    // console.log(contract);
     issuers = await contract.getIssuersList();
   } catch (e) {
     console.log("error: ", e);

@@ -21,7 +21,7 @@ const App = () => {
       const address = await Interface.Public.getAddress();
       setAccount(address);
       const role = await Interface.Public.getWalletAddressRole(address);
-      console.log(role);
+      // console.log(role);
 
       if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
       else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
