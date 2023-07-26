@@ -42,7 +42,7 @@ const Main = () => {
       {/* <Route path="/" element={} */}
 
       {/* User Specific Routes */}
-      <Route path="/issued" element={<Issued />} />
+
       <Route path="/" element={homeScreen()} />
       {/* <Route path="/search" element={<Search />} /> */}
       <Route path="/certificate/:id" element={<CertificateInfo />} />

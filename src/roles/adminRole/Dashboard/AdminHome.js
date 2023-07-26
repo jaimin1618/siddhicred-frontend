@@ -48,7 +48,7 @@ const AdminHome = () => {
       const issuersAddresses = await getIssuersAddress();
       const issuerIPFSCid = await getIssuerIPFSCid(issuersAddresses);
       const issuerContent = await getIssuersIPFSContent(issuerIPFSCid);
-      console.log(issuerContent);
+
       setIssuers(issuerContent);
 
       setTimeout(() => setIsLoading(false), 2000);
@@ -64,12 +64,12 @@ const AdminHome = () => {
   const renderIssuers = () => {
     if (isLoading)
       return (
-        <tr className="text-gray-700 dark:text-gray-400">
-          <td colSpan={5} className="px-4 py-3 text-sm">
+        <tr className="text-gray-700 dark:text-gray-400 w-full">
+          <td colSpan={5} className="flex-col p-5 font-medium">
             <ThreeDots
-              height="80"
-              width="80"
-              radius="9"
+              height="50"
+              width="50"
+              radius="4"
               color="#4fa94d"
               ariaLabel="three-dots-loading"
               className=""
@@ -77,6 +77,22 @@ const AdminHome = () => {
             />
           </td>
         </tr>
+        // <tr className="text-gray-700 dark:text-gray-400">
+        //   <td
+        //     colSpan={5}
+        //     className="px-4 py-3 text-sm flex-col justify-center text-center align-middle items-center"
+        //   >
+        //     <ThreeDots
+        //       height="80"
+        //       width="80"
+        //       radius="9"
+        //       color="#4fa94d"
+        //       ariaLabel="three-dots-loading"
+        //       className=""
+        //       visible={true}
+        //     />
+        //   </td>
+        // </tr>
       );
 
     if (issuers && issuers.length > 0) {
@@ -137,7 +153,11 @@ const AdminHome = () => {
     }
 
     return (
-      <tr className="text-gray-700 dark:text-gray-400">No Issuer Found</tr>
+      <tr className="text-gray-700 dark:text-gray-400 w-full">
+        <td colSpan={5} className="flex-col p-5 text-center font-medium">
+          No Issuer Found
+        </td>
+      </tr>
     );
   };
 

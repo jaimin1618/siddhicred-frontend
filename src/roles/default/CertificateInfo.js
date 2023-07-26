@@ -7,66 +7,152 @@ import Interface from "../../utilities/contract/index";
 const CertificateInfo = () => {
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [certificate, setCertificate] = useState(null);
+  const [certificateIssuer, setCertificateIssuer] = useState(null);
   const { id } = useParams();
-  const [tokenId, setTokenId] = useState(null);
   const navigate = useNavigate();
+  console.log(id);
 
-  //   useEffect(() => {
-  //     const getTokenURI = async (tokenId) => {
-  //       const uri = await Interface.Public.tokenURI(id);
-  //       return uri;
-  //     };
+  useEffect(() => {
+    const getTokenURI = async (tokenId) => {
+      const uri = await Interface.Public.tokenURI(id);
+      return uri;
+    };
 
-  //     const getTokenIPFSContent = async (tokenURI) => {
-  //       const httpRes = await axios.get(GATEWAY + tokenURI);
-  //       const ipfsContent = httpRes.data;
-  //       return {
-  //         ...ipfsContent,
-  //         tokenId: id,
-  //       };
-  //     };
+    const getTokenIPFSContent = async (tokenURI) => {
+      const httpRes = await axios.get(GATEWAY + tokenURI);
+      const ipfsContent = httpRes.data;
+      return {
+        ...ipfsContent,
+        tokenId: id,
+      };
+    };
 
-  //     const main = async () => {
-  //       try {
-  //         const _tokenId = parseInt(id);
-  //         setTokenId(_tokenId);
-  //       } catch (error) {
-  //         alert("Invalid tokenID");
-  //         navigate("/issued");
-  //       }
+    const main = async () => {
+      if (!id) return;
+      const tokenId = parseInt(id);
 
-  //       if (!tokenId) return;
-  //       const uri = await getTokenURI(tokenId);
-  //       const result = await getTokenIPFSContent(uri);
-  //       console.log(result);
-  //       setCertificate(result);
-  //     };
-  //     main();
-  //   }, [tokenId]);
+      if (isNaN(tokenId)) {
+        alert("Invalid tokenID");
+        navigate("/");
+        return;
+      }
+
+      const uri = await getTokenURI(tokenId);
+      const result = await getTokenIPFSContent(uri);
+      console.log(result);
+      setCertificate(result);
+      setCertificateIssuer(result?.issuedBy);
+    };
+
+    main();
+  }, [id]);
+
+  // certificate params to show
+  // image DONE
+  // name DONE
+  // issued by | issuer contact email | issuer profile image
+  // issue date | expiry date
+  // decscri
+  //
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="rounded-lg bg-neutral-100 p-6 text-neutral-700 shadow-lg dark:bg-neutral-600 dark:text-neutral-200 dark:shadow-black/30">
-        <h2 className="mb-5 text-3xl font-semibold">Hello world!</h2>
-        <p>
-          This is a simple hero unit, a simple jumbotron-style component for
-          calling extra attention to featured content or information.
-        </p>
-        <hr className="my-6 h-0.5 border-t-0 bg-neutral-200 opacity-100 dark:opacity-30" />
-        <p className="mb-4">
-          It uses utility classes for typography and spacing to space content
-          out within the larger container.
-        </p>
-        <button
-          type="button"
-          data-te-ripple-init
-          data-te-ripple-color="light"
-          className="rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Learn more
-        </button>
+    <section class="background-radial-gradient mt-24">
+      {/* <style>
+      .background-radial-gradient {
+        background-color: hsl(218, 41%, 15%);
+        background-image: radial-gradient(650px circle at 0% 0%,
+            hsl(218, 41%, 35%) 15%,
+            hsl(218, 41%, 30%) 35%,
+            hsl(218, 41%, 20%) 75%,
+            hsl(218, 41%, 19%) 80%,
+            transparent 100%),
+          radial-gradient(1250px circle at 100% 100%,
+            hsl(218, 41%, 45%) 15%,
+            hsl(218, 41%, 30%) 35%,
+            hsl(218, 41%, 20%) 75%,
+            hsl(218, 41%, 19%) 80%,
+            transparent 100%);
+      }
+    </style> */}
+
+      <div class="px-6 py-12 text-center md:px-12 lg:text-left">
+        <div class="w-100 mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl">
+          <div class="grid items-center gap-12 lg:grid-cols-2">
+            <div class="mt-12 lg:mt-0">
+              <h1 class="mt-0 mb-0 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
+                {certificate && certificate.name
+                  ? certificate.name
+                  : "Not Found"}{" "}
+                <br />
+                <p class="text-black text-xl mt-3">
+                  About certificate:{" "}
+                  {certificate && certificate.description
+                    ? certificate.description
+                    : "Not Found"}{" "}
+                </p>
+                <p class="text-black text-xl mt-3">
+                  Issued on:{" "}
+                  {certificate && certificate.issueDate
+                    ? new Date(certificate.issueDate).toDateString()
+                    : "Not Found"}
+                </p>
+              </h1>
+              <div className="bg-gray-100 mt-3 p-6 rounded-sm shadow-md">
+                <h1 class="mt-0 mb-0  font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
+                  <span class="text-[hsl(218,91%,30%)] text-xl">
+                    Issuer Details
+                  </span>
+                </h1>
+                <div>
+                  <p className="flex justify-center">
+                    <img
+                      src={
+                        certificateIssuer && certificateIssuer.profileImageURL
+                      }
+                      class="w-32 rounded-full"
+                      alt="Avatar"
+                    />
+                  </p>
+                  <div className="flex-col mt-3 mb-3">
+                    <p>
+                      <span className="font-medium">
+                        Issued by (organization){" "}
+                      </span>
+                      {certificate && certificateIssuer.organizationName}
+                    </p>
+                    <p>
+                      <span className="font-medium">
+                        Issuer contact: (organization){" "}
+                      </span>
+
+                      {certificate && certificateIssuer.contact}
+                    </p>
+                    <p>
+                      <span className="font-medium">
+                        Issuer (name) (organization){" "}
+                      </span>
+
+                      {certificate && certificateIssuer.issuerName}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-12 lg:mb-0">
+              <img
+                src={
+                  certificate && certificate.imageURL
+                    ? certificate.imageURL
+                    : "/images/notfound.png"
+                }
+                class="w-full rounded-lg shadow-lg dark:shadow-black/20"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

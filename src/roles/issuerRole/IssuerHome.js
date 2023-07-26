@@ -49,7 +49,7 @@ const IssuerHome = () => {
     main();
   }, []);
 
-  const renderIssuers = () => {
+  const renderCertificates = () => {
     if (isLoading)
       return (
         <tr className="text-gray-700 dark:text-gray-400">
@@ -129,7 +129,11 @@ const IssuerHome = () => {
     }
 
     return (
-      <tr className="text-gray-700 dark:text-gray-400">No Issuer Found</tr>
+      <tr className="text-gray-700 dark:text-gray-400">
+        <td colSpan={4} className="px-4 py-3 flex-col font-medium text-center">
+          No Issuer Found
+        </td>
+      </tr>
     );
   };
 
@@ -252,7 +256,7 @@ const IssuerHome = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                  {renderIssuers()}
+                  {renderCertificates()}
                   {/* { cates &&
                     certificates.map((issuer, idx) => (
                       <tr
