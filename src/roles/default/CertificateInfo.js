@@ -56,7 +56,7 @@ const CertificateInfo = () => {
   //
 
   return (
-    <section class="background-radial-gradient mt-24">
+    <section className="background-radial-gradient mt-24">
       {/* <style>
       .background-radial-gradient {
         background-color: hsl(218, 41%, 15%);
@@ -75,22 +75,22 @@ const CertificateInfo = () => {
       }
     </style> */}
 
-      <div class="px-6 py-12 text-center md:px-12 lg:text-left">
-        <div class="w-100 mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl">
-          <div class="grid items-center gap-12 lg:grid-cols-2">
-            <div class="mt-12 lg:mt-0">
-              <h1 class="mt-0 mb-0 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
+      <div className="px-6 py-12 text-center md:px-12 lg:text-left">
+        <div className="w-100 mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="mt-12 lg:mt-0">
+              <h1 className="mt-0 mb-0 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
                 {certificate && certificate.name
                   ? certificate.name
                   : "Not Found"}{" "}
                 <br />
-                <p class="text-black text-xl mt-3">
+                <p className="text-black text-xl mt-3">
                   About certificate:{" "}
                   {certificate && certificate.description
                     ? certificate.description
                     : "Not Found"}{" "}
                 </p>
-                <p class="text-black text-xl mt-3">
+                <p className="text-black text-xl mt-3">
                   Issued on:{" "}
                   {certificate && certificate.issueDate
                     ? new Date(certificate.issueDate).toDateString()
@@ -98,8 +98,8 @@ const CertificateInfo = () => {
                 </p>
               </h1>
               <div className="bg-gray-100 mt-3 p-6 rounded-sm shadow-md">
-                <h1 class="mt-0 mb-0  font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
-                  <span class="text-[hsl(218,91%,30%)] text-xl">
+                <h1 className="mt-0 mb-0  font-bold tracking-tight md:text-6xl xl:text-7xl text-[hsl(218,100%,75%)]">
+                  <span className="text-[hsl(218,91%,30%)] text-xl">
                     Issuer Details
                   </span>
                 </h1>
@@ -108,8 +108,10 @@ const CertificateInfo = () => {
                     <img
                       src={
                         certificateIssuer && certificateIssuer.profileImageURL
+                          ? certificateIssuer.profileImageURL
+                          : "/images/dummyProfile.webp"
                       }
-                      class="w-32 rounded-full"
+                      className="w-32 rounded-full"
                       alt="Avatar"
                     />
                   </p>
@@ -138,14 +140,14 @@ const CertificateInfo = () => {
                 </div>
               </div>
             </div>
-            <div class="mb-12 lg:mb-0">
+            <div className="mb-12 lg:mb-0">
               <img
                 src={
                   certificate && certificate.imageURL
                     ? certificate.imageURL
                     : "/images/notfound.png"
                 }
-                class="w-full rounded-lg shadow-lg dark:shadow-black/20"
+                className="w-full rounded-lg shadow-lg dark:shadow-black/20"
                 alt=""
               />
             </div>

@@ -92,6 +92,40 @@ async function totalSupply() {
   return total;
 }
 
+async function getFirstToken(walletAddress, IpfsHash) {
+  let status;
+
+  // validate and sanitize inputs
+  if (!isAddress(walletAddress)) {
+    return {
+      Status: "Error",
+      Message: "Invalid Wallet address provided, provide valid wallet address",
+    };
+  }
+
+  try {
+    const signer = await requestAccounts();
+    const contract = new ethers.Contract(address, abi, signer);
+    const tx = await contract.getFirstToken(walletAddress, IpfsHash);
+    status = await tx.wait();
+    if (!status) status = false;
+  } catch (e) {
+    if (process.env.ENVIRONMENT === "development")
+      console.error("Error occured: ", e);
+    status = false;
+    return {
+      Status: "Error",
+      Message: "Transaction failed due to some problem, Please try again later",
+    };
+  }
+
+  return {
+    Status: "Success",
+    Message:
+      "You have successfully minted your first certificate. Issue to you by yourself 😎.",
+  };
+}
+
 const _ = {
   getAddress,
   getAdmin,
@@ -103,6 +137,7 @@ const _ = {
   getUserTokenIds,
   tokenURI,
   totalSupply,
+  getFirstToken,
 };
 
 export default _;

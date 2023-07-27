@@ -29,6 +29,7 @@ class Issuer {
     country,
     contact,
     website,
+    becameIssuerOn,
   }) {
     this.address = address;
     this.profileImageURL = profileImageURL;
@@ -38,7 +39,7 @@ class Issuer {
     this.country = country;
     this.contact = contact;
     this.website = website;
-    this.becameIssuerOn = new Date();
+    this.becameIssuerOn = becameIssuerOn || new Date();
   }
 }
 

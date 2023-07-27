@@ -159,7 +159,7 @@ const IssueCertificate = () => {
     }
 
     // get IPFS uploaded certificate CID
-    // IF: profile image upload success
+    // IF: json upload success
     toast.success(
       "Success! Certificate Content uploaded to IPFS successfully.",
       {

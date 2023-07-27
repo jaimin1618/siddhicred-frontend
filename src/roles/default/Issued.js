@@ -1,31 +1,83 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
+import IPFS from "../../utilities/ipfs/pinata";
 import Interface from "../../utilities/contract/";
 import User from "../../context/User";
 import { ThreeDots } from "react-loader-spinner";
+import { Certificate } from "../../utilities/templates";
+import {
+  firstCertificateInfo,
+  firstCertificateIssuerInfo,
+} from "../../constants";
 
 const Issued = () => {
+  const { address } = useContext(User);
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [searchKey, setSearchKey] = useState("");
   const [tokenList, setTokenList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // const handleSearchReset = () => {
-  //   setSearchKey("");
-  //   handleSearch();
-  // };
+  const handleButtonClick = async () => {
+    firstCertificateInfo.issued = {
+      name: "Jane Doe",
+      address,
+    };
+    firstCertificateInfo.issuer = firstCertificateIssuerInfo;
 
-  // const handleSearch = () => {
-  //   const searchedTokens = tokenList.filter((token) => {
-  //     const regex = new RegExp(searchKey, "i");
-  //     return regex.test(token.name);
-  //   });
+    // firstCertificateInfo.issuedBy =
+    const certificateContent = new Certificate(firstCertificateInfo);
 
-  //   setTokenList(searchedTokens);
-  // };
+    // pin this certificate on ipfs
+    const uploadJson = await IPFS.pinJson(certificateContent);
+
+    // IF: Json upload fails
+    if (uploadJson.Status === "Error") {
+      toast.error("Error! Uploading new Certificate content to IPFS failed.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // get IPFS uploaded certificate CID
+    // IF: json upload success
+    toast.success(
+      "Success! Certificate Content uploaded to IPFS successfully.",
+      {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      }
+    );
+
+    // save it on blockchain issued to walletAddress and IpfsHash
+    const res = await Interface.Public.getFirstToken(
+      address,
+      uploadJson.IpfsHash
+    );
+
+    if (res.Status === "Error") {
+      toast.error(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+    } else if (res.Status === "Success") {
+      toast.success(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      window.location.href = "/";
+    }
+  };
 
   useEffect(() => {
     const getTokenIds = async () => {
@@ -43,10 +95,10 @@ const Issued = () => {
     };
 
     const getTokenIPFSContent = (tokens) => {
-      console.log(tokens);
+      // console.log(tokens);
       const ipfsContent = tokens.map(async (token, idx) => {
         const httpRes = await axios.get(GATEWAY + token.tokenURI);
-        console.log(httpRes.data);
+        // console.log(httpRes.data);
         return {
           ...httpRes.data,
           tokenId: token.tokenId,
@@ -61,7 +113,7 @@ const Issued = () => {
       const ids = await getTokenIds();
       const tokens = await getTokenURIs(ids);
       const certificates = await getTokenIPFSContent(tokens || []);
-      console.log(certificates);
+      // console.log(certificates);
       setTokenList(certificates || []);
       setIsLoading(false);
       // setTimeout(() => setIsLoading(false), 3000);
@@ -89,9 +141,9 @@ const Issued = () => {
 
     if (tokenList && tokenList.length > 0) {
       return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 px-2">
           {tokenList.map((token, idx) => (
-            <div key={idx} className="mt-4">
+            <div key={idx} className="mt-4 text-md font-medium">
               <a onClick={() => navigate("/certificate/" + token.tokenId)}>
                 <img
                   className="hover:grow hover:shadow-md h-2/3"
@@ -99,9 +151,11 @@ const Issued = () => {
                   height="300px"
                   width="300px"
                 />
-                <div className="pt-1 pb-1 flex-col items-center justify-between align-middle h-1/4 bg-gray-500 rounded-b-sm">
-                  <p className="w-full h-1/2">{token.name.substring(0, 15)}</p>
-                  <p className="h-1/2 w-full text-gray-900">
+                <div className="pt-1 pb-1 flex-col items-center justify-between align-middle h-1/4 bg-gray-300 rounded-b-sm">
+                  <p className="w-full h-1/2 p-2">
+                    {token.name.substring(0, 65)}
+                  </p>
+                  <p className="h-1/2 w-full text-gray-900 p-2">
                     {new Date(token.issueDate).toDateString()}
                   </p>
                 </div>
@@ -114,17 +168,25 @@ const Issued = () => {
 
     return (
       <div
-        className="mb-4 w-full rounded-lg bg-warning-100 px-6 py-5 text-base bg-yellow-500"
+        className="mb-4 w-full rounded-lg bg-warning-100 px-6 py-5 text-base bg-yellow-100 font-semibold font-serif"
         role="alert"
       >
-        No Certificates Found!
+        No Certificates Found 😔! Don't worry 😁 get your first Certificates by
+        clicking on{" "}
+        <span
+          onClick={() => handleButtonClick()}
+          className="bg-green-500 px-2 py-2 hover:bg-green-500 font-bold rounded-sm hover:cursor-pointer "
+        >
+          Button
+        </span>
+        👈
       </div>
     );
   };
 
   return (
     <section className="bg-white mt-24 py-8">
-      <div className="container mx-auto flex items-center flex-wrap pt-2 pb-6">
+      <div className="container mx-auto flex items-center flex-wrap pt-1 pb-1">
         <nav id="store" className="w-full z-30 top-0 px-3 py-1">
           <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-3">
             <a
@@ -219,7 +281,7 @@ const Issued = () => {
           </div>
         </nav>
       </div>
-      <div className="lg:p-5 md:p-3 sm:p-1 flex justify-center">
+      <div className="lg:px-3 lg:py-0 md:p-3 flex justify-center">
         {renderCertificates()}
       </div>
     </section>

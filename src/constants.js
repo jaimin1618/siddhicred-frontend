@@ -44,9 +44,30 @@ const commonPages = [
   { name: "Contact us", href: "/contact" },
 ];
 
+const firstCertificateInfo = {
+  imageURL:
+    "https://amaranth-concerned-stingray-874.mypinata.cloud/ipfs/QmPxqUxRrajT3b8puyMkoggkZXRiyCWkMbPRic6wp1j2mQ",
+  name: "Certificate of SiddhiCred Software joining and usage.",
+  description:
+    "This is to certify that Jane Doe has successfully joined and used the SiddhiCred - A NFT based certificate issuing software.",
+};
+
+const firstCertificateIssuerInfo = {
+  address: "Current owner (to themselves)",
+  profileImageURL: null,
+  issuerName: "Jane Doe",
+  organizationName: "NA",
+  description: "NA",
+  country: "NA",
+  contact: "NA",
+  website: "NA",
+};
+
 module.exports = {
   adminNavigations,
   issuerNavigations,
   defaultNavigations,
   ROLES,
+  firstCertificateInfo,
+  firstCertificateIssuerInfo,
 };
