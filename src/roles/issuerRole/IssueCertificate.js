@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { isAddress } from "ethers";
+import { ThreeDots } from "react-loader-spinner";
 
 import IPFS from "../../utilities/ipfs/pinata";
 import User from "../../context/User";
@@ -10,18 +11,17 @@ import { Certificate } from "../../utilities/templates";
 
 const IssueCertificate = () => {
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
+  const [isIssuerDataLoading, setIsIssuerDataLoading] = useState(false);
+  const [isButtonClickLoading, setIsButtonClickLoading] = useState(false);
   const { address, role } = useContext(User);
   const [issuerInfo, setIssuerInfo] = useState(null);
   const [certificateImage, setCertificateImage] = useState(null);
+
   const [info, setInfo] = useState({
     name: "",
     description: "",
     issuedToName: "",
     issuedToPublicAddress: "",
-  });
-  const [mintInfo, setMintInfo] = useState({
-    walletAddress: "",
-    ipfsHash: "",
   });
 
   const handleFileChange = (e) => {
@@ -95,9 +95,10 @@ const IssueCertificate = () => {
   };
 
   const handleButtonClick = async () => {
+    setIsButtonClickLoading(true);
     // handle input validations
     const validationError = validateInput();
-    console.log(validationError);
+
     if (validationError) {
       toast.warn(validationError, {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -105,6 +106,7 @@ const IssueCertificate = () => {
         autoClose: 3000,
       });
 
+      setIsButtonClickLoading(false);
       return;
     }
 
@@ -122,15 +124,20 @@ const IssueCertificate = () => {
         }
       );
 
+      setIsButtonClickLoading(false);
       return;
     }
 
     // IF: profile image upload success
-    toast.success("Success! Certificate Image/picture uploaded successfully.", {
-      position: toast.POSITION.BOTTOM_CENTER,
-      hideProgressBar: true,
-      autoClose: 3000,
-    });
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      toast.success(
+        "Success! Certificate Image/picture uploaded successfully.",
+        {
+          position: toast.POSITION.BOTTOM_CENTER,
+          hideProgressBar: true,
+          autoClose: 3000,
+        }
+      );
 
     // create Certificate template with CID of certificate image
     const infoJson = {
@@ -155,19 +162,21 @@ const IssueCertificate = () => {
         autoClose: 3000,
       });
 
+      setIsButtonClickLoading(false);
       return;
     }
 
     // get IPFS uploaded certificate CID
     // IF: json upload success
-    toast.success(
-      "Success! Certificate Content uploaded to IPFS successfully.",
-      {
-        position: toast.POSITION.BOTTOM_CENTER,
-        hideProgressBar: true,
-        autoClose: 3000,
-      }
-    );
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      toast.success(
+        "Success! Certificate Content uploaded to IPFS successfully.",
+        {
+          position: toast.POSITION.BOTTOM_CENTER,
+          hideProgressBar: true,
+          autoClose: 3000,
+        }
+      );
 
     // save it on blockchain issued to walletAddress and IpfsHash
     const res = await Interface.Issuer.issueCertificate(
@@ -182,12 +191,17 @@ const IssueCertificate = () => {
         autoClose: 3000,
       });
     } else if (res.Status === "Success") {
-      toast.success(res.Message, {
-        position: toast.POSITION.BOTTOM_CENTER,
-        hideProgressBar: true,
-        autoClose: 3000,
-      });
+      toast.success(
+        `Certificate Issued Successfully to ${info.issuedToPublicAddress} successfully!`,
+        {
+          position: toast.POSITION.BOTTOM_CENTER,
+          hideProgressBar: true,
+          autoClose: 3000,
+        }
+      );
     }
+
+    setIsButtonClickLoading(false);
   };
 
   useEffect(() => {
@@ -217,15 +231,76 @@ const IssueCertificate = () => {
         });
     };
 
-    getIssuerInfo();
+    const main = async () => {
+      setIsIssuerDataLoading(true);
+      getIssuerInfo();
+      setIsIssuerDataLoading(false);
+    };
+
+    main();
   }, [address]);
 
   return (
     <div className="h-5/6 p-3 bg-gray-100 font-medium flex items-center justify-center mt-24">
       <div className="container max-w-screen-lg mx-auto">
-        <div className="">
-          <div className="bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14">
-            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1">
+        <div className="relative">
+          {isIssuerDataLoading && (
+            <div className="">
+              <div className="capitalize text-2xl">
+                Loading issuer information
+              </div>
+              {isIssuerDataLoading && (
+                <ThreeDots
+                  height="80"
+                  width="80"
+                  radius="9"
+                  color="#4fa94d"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{
+                    display: "flex",
+                    margin: "auto",
+
+                    justifyContent: "center",
+                  }}
+                  style={{ backgroundColor: "Red" }}
+                  wrapperClassName=""
+                  visible={true}
+                />
+              )}
+            </div>
+          )}
+          {isButtonClickLoading && (
+            <div className="">
+              <div className="capitalize text-2xl">
+                Please wait for sometime! Issuing certificate...
+              </div>
+              {isButtonClickLoading && (
+                <ThreeDots
+                  height="80"
+                  width="80"
+                  radius="9"
+                  color="#4fa94d"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{
+                    display: "flex",
+                    margin: "auto",
+
+                    justifyContent: "center",
+                  }}
+                  style={{ backgroundColor: "Red" }}
+                  wrapperClassName=""
+                  visible={true}
+                />
+              )}
+            </div>
+          )}
+
+          <div
+            className={`bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14 ${
+              isIssuerDataLoading ? "blur-sm" : ""
+            } ${isButtonClickLoading ? "blur-sm" : ""}`}
+          >
+            <div className="grid text-sm grid-cols-1 lg:grid-cols-1">
               {/* <div className="bg-blue-300">Main</div> */}
               <div className="m-auto">
                 <img
@@ -248,8 +323,11 @@ const IssueCertificate = () => {
                     Certificate image
                   </label>
                   <input
+                    disabled={isIssuerDataLoading ? "disabled" : ""}
                     onChange={(e) => handleFileChange(e)}
-                    className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
+                    className={`${
+                      isIssuerDataLoading && "bg-gray-200"
+                    } relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primar`}
                     type="file"
                     name="file"
                     id="certificateImage"
@@ -259,10 +337,13 @@ const IssueCertificate = () => {
                   <div className="md:col-span-3">
                     <label htmlFor="address">Certificate name (Title)</label>
                     <input
+                      disabled={isIssuerDataLoading ? "disabled" : ""}
                       onChange={(e) => handleInputChange(e)}
                       name="name"
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full ${
+                        isIssuerDataLoading ? "bg-gray-200" : "bg-gray-50"
+                      }`}
                       value={info.name}
                       placeholder="Micro-controllers and IoT certified"
                     />
@@ -271,10 +352,13 @@ const IssueCertificate = () => {
                   <div className="md:col-span-2">
                     <label htmlFor="city">Issued to (Holder name)</label>
                     <input
+                      disabled={isIssuerDataLoading ? "disabled" : ""}
                       onChange={(e) => handleInputChange(e)}
                       type="text"
                       name="issuedToName"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full ${
+                        isIssuerDataLoading ? "bg-gray-200" : "bg-gray-50"
+                      }`}
                       value={info.issuedToName}
                       placeholder="Jane Doe"
                     />
@@ -285,10 +369,13 @@ const IssueCertificate = () => {
                       Issued to (public address)
                     </label>
                     <input
+                      disabled={isIssuerDataLoading ? "disabled" : ""}
                       onChange={(e) => handleInputChange(e)}
                       name="issuedToPublicAddress"
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full ${
+                        isIssuerDataLoading ? "bg-gray-200" : "bg-gray-50"
+                      }`}
                       placeholder="0xf39Fd6e51..."
                       value={info.issuedToPublicAddress}
                     />
@@ -297,11 +384,14 @@ const IssueCertificate = () => {
                   <div className="md:col-span-5">
                     <label>Certificate description </label>
                     <textarea
+                      disabled={isIssuerDataLoading ? "disabled" : ""}
                       onChange={(e) => handleInputChange(e)}
                       name="description"
                       value={info.description}
                       type="text"
-                      className="h-24 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-24 border mt-1 rounded px-4 w-full ${
+                        isIssuerDataLoading ? "bg-gray-200" : "bg-gray-50"
+                      }`}
                       placeholder="More information about organization..."
                     />
                   </div>
@@ -309,8 +399,11 @@ const IssueCertificate = () => {
                   <div className="md:col-span-5 text-right">
                     <div className="inline-flex items-end">
                       <button
+                        disabled={isIssuerDataLoading ? "disabled" : ""}
                         onClick={() => handleButtonClick()}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded"
+                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-3 rounded ${
+                          isIssuerDataLoading ? "blur-sm" : ""
+                        }`}
                       >
                         Issue Certificate
                       </button>

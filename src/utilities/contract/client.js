@@ -9,18 +9,15 @@ Basic Wallet and Wallet address functions
 async function requestAccounts() {
   let provider;
   if (window.ethereum === null) {
-    console.log("MetaMask not installed; using read-only defaults");
+    alert("MetaMask wallet is not installed.");
     provider = await ethers.getDefaultProvider();
   } else {
     provider = new ethers.BrowserProvider(window.ethereum);
   }
 
-  // const url = "http://127.0.0.1:8545/";
-  // provider = new ethers.JsonRpcProvider(url);
+  const signer = await provider.getSigner();
 
-  const s = await provider.getSigner();
-
-  return s;
+  return signer;
 }
 
 export default requestAccounts;

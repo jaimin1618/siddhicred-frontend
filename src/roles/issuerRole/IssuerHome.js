@@ -70,12 +70,32 @@ const IssuerHome = () => {
       return Promise.all(ipfsContent);
     };
 
+    const getTotalSupply = async () => {
+      const res = await Interface.Public.totalSupply();
+      const total = parseInt(res);
+
+      if (isNaN(total)) {
+        toast.error(
+          "Getting token total supply count failed, Refresh the page and try again.",
+          {
+            position: toast.POSITION.BOTTOM_CENTER,
+            hideProgressBar: true,
+            autoClose: 3000,
+          }
+        );
+      }
+
+      return total;
+    };
+
     const main = async () => {
       setIsLoading(true);
       const ids = await getTokenIds(address);
       const tokenURIs = await getTokenURIs(ids);
       const result = await getTokenIPFSContent(tokenURIs);
+      const total = await getTotalSupply();
       setCertificates(result);
+      setTotalSupply(total);
       setIsLoading(false);
     };
 
@@ -94,6 +114,12 @@ const IssuerHome = () => {
               color="#4fa94d"
               ariaLabel="three-dots-loading"
               // className=""
+              wrapperStyle={{
+                display: "flex",
+                margin: "auto",
+
+                justifyContent: "center",
+              }}
               visible={true}
             />
           </td>

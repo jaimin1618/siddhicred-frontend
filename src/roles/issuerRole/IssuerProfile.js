@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 import User from "../../context/User";
 import Interface from "../../utilities/contract";
@@ -11,6 +12,7 @@ const IssuerProfile = () => {
   const { address, role } = useContext(User);
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [profileImage, setProfileImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState({
     address: "",
     profileImageURL: "",
@@ -160,21 +162,31 @@ const IssuerProfile = () => {
       console.log(httpRes.data);
       setProfile(json);
 
-      toast.success(res.Message, {
+      toast.success("Issuer data Loaded successfully.", {
         position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
     };
 
-    getIssuerInfo();
+    const main = async () => {
+      setIsLoading(true);
+      getIssuerInfo();
+      setIsLoading(false);
+    };
+
+    main();
   }, [address]);
 
   return (
-    <div className="h-5/6 p-3 bg-gray-100 font-medium flex items-center justify-center mt-24">
+    <div className="h-5/6 p-3 bg-blue-900 font-medium flex items-center justify-center mt-20">
       <div className="container max-w-screen-lg mx-auto">
-        <div>
-          <div className="bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14">
+        <div className="">
+          <div
+            className={`bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14 ${
+              isLoading ? "blur-sm" : ""
+            }`}
+          >
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
               <div className="text-gray-600">
                 <img
@@ -183,11 +195,11 @@ const IssuerProfile = () => {
                       ? profile.profileImageURL
                       : "/notfound.png"
                   }
-                  className="bg-red-400 w-1/2 m-auto rounded-full"
+                  className="bg-red-400 w-full h-1/2 m-auto rounded-full"
                   alt="Avatar"
                 />
                 <div className="flex justify-center mt-8">
-                  <div className="max-w-2xl rounded-lg shadow-xl bg-gray-50">
+                  <div className="max-w-2xl rounded-lg shadow-xl bg-gray-200">
                     <div className="m-4">
                       <label className="inline-block mb-2 text-gray-500">
                         Upload Profile Picture
@@ -236,7 +248,7 @@ const IssuerProfile = () => {
                       onChange={(e) => handleInputChange(e)}
                       name="organizationName"
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
                       value={profile.organizationName}
                       placeholder="Apple Inc."
                     />
@@ -251,7 +263,7 @@ const IssuerProfile = () => {
                       onChange={(e) => handleInputChange(e)}
                       type="text"
                       name="issuerName"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
                       value={profile.issuerName}
                       placeholder="Jane Doe"
                     />
@@ -278,7 +290,7 @@ const IssuerProfile = () => {
                       name="contact"
                       value={profile.contact}
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
                       placeholder="email@domain.com"
                     />
                   </div>
@@ -291,7 +303,7 @@ const IssuerProfile = () => {
                       name="website"
                       profile={profile.website}
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
                       value={profile.website}
                       placeholder="https://myorganization.com"
                     />
@@ -305,7 +317,7 @@ const IssuerProfile = () => {
                       name="country"
                       value={profile.country}
                       type="text"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-200"
                       placeholder="India"
                     />
                   </div>
@@ -318,7 +330,7 @@ const IssuerProfile = () => {
                       name="description"
                       value={profile.description}
                       type="text"
-                      className="h-24 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className="h-24 border mt-1 rounded px-4 w-full bg-gray-200"
                       placeholder="More information about organization..."
                     />
                   </div>

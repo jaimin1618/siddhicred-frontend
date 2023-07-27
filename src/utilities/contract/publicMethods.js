@@ -36,7 +36,7 @@ async function getIssuerInfo(walletAddress) {
 
     return {
       Status: "Success",
-      Message: "Success! Issuer CID Found successfully",
+      Message: "Success! Issuer ContentHash Found successfully",
       IpfsHash: CID,
     };
   } catch (error) {

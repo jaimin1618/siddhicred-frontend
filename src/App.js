@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ethers } from "ethers";
 
 import "./App.css";
 import Header from "./common/Header";
@@ -26,12 +27,31 @@ const App = () => {
       if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
       else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
       else setRole(ROLES.USER);
-
-      const count = await Interface.Public.countIssuedCertificates(address);
     };
 
     setAccessRole();
   }, [account]);
+
+  useEffect(() => {
+    // runs when user changes account from wallet
+    async function onAccountChange() {
+      window.ethereum.on("accountsChanged", async function () {
+        let provider;
+        if (window.ethereum === null) {
+          alert("MetaMask wallet is not installed.");
+          provider = await ethers.getDefaultProvider();
+        } else {
+          provider = new ethers.BrowserProvider(window.ethereum);
+        }
+
+        const accounts = await provider.send("eth_requestAccounts", []);
+        setAccount(accounts[0]);
+
+        window.location.href = "/";
+      });
+    }
+    onAccountChange();
+  }, []);
 
   return (
     <div className="App">

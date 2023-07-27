@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { toast } from "react-toastify";
+import { ThreeDots } from "react-loader-spinner";
 
 import Interface from "../../utilities/contract";
 import User from "../../context/User";
@@ -8,6 +9,7 @@ import IPFS from "../../utilities/ipfs/pinata";
 
 const CreateIssuer = () => {
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { address } = useContext(User);
   const [issuerAddr, setIssuerAddr] = useState("");
   const [profile, setProfile] = useState({
@@ -58,6 +60,7 @@ const CreateIssuer = () => {
   };
 
   const handleButtonClick = async () => {
+    setIsButtonLoading(true);
     // upload profile picture on IPFS and get CID
     const upload = await uploadProfileImage();
 
@@ -69,15 +72,17 @@ const CreateIssuer = () => {
         autoClose: 3000,
       });
 
+      setIsButtonLoading(false);
       return;
     }
 
     // IF: profile image upload success
-    toast.success("Success! Issuer profile picture uploaded successfully.", {
-      position: toast.POSITION.BOTTOM_CENTER,
-      hideProgressBar: true,
-      autoClose: 3000,
-    });
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      toast.success("Success! Issuer profile picture uploaded successfully.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
 
     // create Issuer content JSON
     const newProfile = {
@@ -99,15 +104,17 @@ const CreateIssuer = () => {
         autoClose: 3000,
       });
 
+      setIsButtonLoading(false);
       return;
     }
 
     // IF: profile image upload success
-    toast.success("Success! Issuer Content uploaded to IPFS successfully.", {
-      position: toast.POSITION.BOTTOM_CENTER,
-      hideProgressBar: true,
-      autoClose: 3000,
-    });
+    if (process.env.REACT_APP_ENVIRONMENT === "development")
+      toast.success("Success! Issuer Content uploaded to IPFS successfully.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
 
     // update contract state with Issuer address and CID
     const res = await Interface.Admin.createIssuer(
@@ -122,19 +129,50 @@ const CreateIssuer = () => {
         autoClose: 3000,
       });
     } else if (res.Status === "Success") {
-      toast.success(res.Message, {
+      toast.success("New Issuer created successfully!", {
         position: toast.POSITION.BOTTOM_CENTER,
         hideProgressBar: true,
         autoClose: 3000,
       });
     }
+
+    setIsButtonLoading(false);
   };
 
   return (
-    <div className="h-5/6 p-3 bg-gray-100 font-medium flex items-center justify-center mt-24">
+    <div className="h-5/6 p-3 bg-yellow-700 font-medium flex items-center justify-center mt-20">
       <div className="container max-w-screen-lg mx-auto">
         <div>
-          <div className="bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14">
+          {isButtonLoading && (
+            <div className="">
+              <div className="capitalize text-2xl">
+                Please wait for sometime! Issuing certificate...
+              </div>
+              {isButtonLoading && (
+                <ThreeDots
+                  height="80"
+                  width="80"
+                  radius="9"
+                  color="#4fa94d"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{
+                    display: "flex",
+                    margin: "auto",
+
+                    justifyContent: "center",
+                  }}
+                  style={{ backgroundColor: "Red" }}
+                  wrapperClassName=""
+                  visible={true}
+                />
+              )}
+            </div>
+          )}
+          <div
+            className={`bg-white rounded shadow-sm p-4 px-4 md:p-8 mb-6 md:mt-14 sm:mt-14 ${
+              isButtonLoading ? "blur-sm" : ""
+            }`}
+          >
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
               <div className="text-gray-600flex-col">
                 <div className="h-2/3 p-5">

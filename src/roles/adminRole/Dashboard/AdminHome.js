@@ -103,6 +103,11 @@ const AdminHome = () => {
               ariaLabel="three-dots-loading"
               className=""
               visible={true}
+              wrapperStyle={{
+                display: "flex",
+                margin: "auto",
+                justifyContent: "center",
+              }}
             />
           </td>
         </tr>
