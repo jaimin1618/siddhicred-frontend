@@ -168,14 +168,14 @@ const Issued = () => {
 
     return (
       <div
-        className="mb-4 w-full rounded-lg bg-warning-100 px-6 py-5 text-base bg-yellow-100 font-semibold font-serif"
+        className="mb-4 w-full rounded-lg bg-warning-100 px-6 py-5 text-base bg-yellow-100 font-semibold"
         role="alert"
       >
         No Certificates Found 😔! Don't worry 😁 get your first Certificates by
         clicking on{" "}
         <span
           onClick={() => handleButtonClick()}
-          className="bg-green-500 px-2 py-2 hover:bg-green-500 font-bold rounded-sm hover:cursor-pointer "
+          className="bg-green-500 px-1 py-1 hover:bg-green-500 font-bold rounded-sm hover:cursor-pointer"
         >
           Button
         </span>

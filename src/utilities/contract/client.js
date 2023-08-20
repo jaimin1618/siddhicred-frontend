@@ -15,7 +15,15 @@ async function requestAccounts() {
     provider = new ethers.BrowserProvider(window.ethereum);
   }
 
-  const signer = await provider.getSigner();
+  let signer;
+
+  try {
+    signer = await provider.getSigner();
+  } catch (e) {
+    console.log(e);
+    alert("Connect your metamask account with application");
+    await provider.send("eth_requestAccounts", []);
+  }
 
   return signer;
 }
