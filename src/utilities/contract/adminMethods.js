@@ -41,8 +41,6 @@ async function createIssuer(walletAddress, cid) {
 }
 
 async function removeIssuer(walletAddress) {
-  let status;
-
   // validate
   if (!isAddress(walletAddress)) {
     return {
@@ -60,7 +58,6 @@ async function removeIssuer(walletAddress) {
     if (process.env.REACT_APP_ENVIRONMENT === "development")
       console.error("Error occured: ", e);
 
-    status = false;
     return {
       Status: "Error",
       Message: "Transaction failed due to some problem, Please try again later",
@@ -77,8 +74,6 @@ async function removeIssuer(walletAddress) {
 }
 
 async function updateIssuer(walletAddress, contentHash) {
-  let status;
-
   // validate
   if (!isAddress(walletAddress)) {
     return {
@@ -96,7 +91,6 @@ async function updateIssuer(walletAddress, contentHash) {
     if (process.env.REACT_APP_ENVIRONMENT === "development")
       console.error("Error occured: ", e);
 
-    status = false;
     return {
       Status: "Error",
       Message: "Transaction failed due to some problem, Please try again later",

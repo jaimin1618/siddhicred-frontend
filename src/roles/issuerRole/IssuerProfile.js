@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { ThreeDots } from "react-loader-spinner";
 
 import User from "../../context/User";
 import Interface from "../../utilities/contract";
@@ -9,7 +8,7 @@ import IPFS from "../../utilities/ipfs/pinata";
 import { Issuer } from "../../utilities/templates";
 
 const IssuerProfile = () => {
-  const { address, role } = useContext(User);
+  const { address } = useContext(User);
   const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
   const [profileImage, setProfileImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -144,6 +143,7 @@ const IssuerProfile = () => {
   useEffect(() => {
     const getIssuerInfo = async () => {
       if (!address) return;
+
       const res = await Interface.Public.getIssuerInfo(address);
       console.log(res);
 

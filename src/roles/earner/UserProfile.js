@@ -40,13 +40,13 @@ const UserProfile = () => {
   });
 
   return (
-    <div className="flex justify-center items-center">
-      <div className=" max-w-2xl shadow overflow-hidden sm:rounded-lg mt-32 mb-16 p-4 bg-gray-200">
-        <div className="px-4 py-5 sm:px-6">
+    <div className="flex justify-center items-center ">
+      <div className=" max-w-2xl overflow-hidden sm:rounded-lg mt-10 -mb-0 p-4">
+        <div className="px-4 py-0 sm:px-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900">
             User Profile
           </h3>
-          <p className="mt-1 max-w-2xl underline-offset-8 underline text-lg text-gray-500 font-bold">
+          <p className="mt-1 max-w-2xl underline-offset-8 underline text-lg text-gray-500 font-bold mb-3">
             Number of owned certificate: {certificateCount}
           </p>
         </div>

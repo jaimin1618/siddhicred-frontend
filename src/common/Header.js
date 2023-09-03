@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   adminNavigations,
   issuerNavigations,
@@ -7,6 +7,9 @@ import {
 } from "../constants";
 // import Logo from "../media/Logo.png";
 import { useNavigate } from "react-router";
+import Interface from "../utilities/contract/index";
+import User from "../context/User";
+import Swal from "sweetalert2";
 
 /*==========================
 
@@ -35,6 +38,7 @@ import { useNavigate } from "react-router";
 const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
   const [navigation, setNavigation] = useState([]);
   const navigate = useNavigate();
+  const { setAccount, setRole } = useContext(User);
 
   useEffect(() => {
     if (userRole === ROLES.ADMIN) setNavigation(adminNavigations);
@@ -42,18 +46,55 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
     else setNavigation(defaultNavigations);
   }, [userRole]);
 
+  const connectMetamask = async () => {
+    const check = Interface.Public.checkIsMetamaskInstalled();
+    if (!check) return;
+    Interface.Public.alertMetamaskConnected();
+    await Interface.Public.requestAccountConnect();
+
+    const setAccountAndAccessRole = async () => {
+      const address = await Interface.Public.getAddress();
+      setAccount(address);
+      const role = await Interface.Public.getWalletAddressRole(address);
+      setRole(role);
+      localStorage.setItem("user", JSON.stringify({ address, role }));
+
+      if (role === ROLES.GUEST) {
+        // rediect to register page.
+        Swal.fire({
+          title: "Oops...you still haven't registered an earner account! 😅.",
+          text: "Click on \"Register Now\" button below, it will send you to registration page.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Register Now",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/register");
+          }
+        });
+      } else {
+        // just refresh the page
+        window.location.href = "/";
+      }
+    };
+
+    setAccountAndAccessRole();
+  };
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-black h-24">
-      <nav className="main-nav">
-        <div className="container xl:max-w-6xl mx-auto px-4">
+    <header className="top-0 left-0 right-0 z-40 bg-white">
+      <nav className="main-nav flex">
+        <div className="container xl:max-w-6xl mx-auto px-0">
           <div className="lg:flex lg:justify-between">
             <div className="flex justify-between">
-              <div className="underline  underline-offset-8 mx-w-10 text-4xl font-bold capitalize text-white flex items-center">
+              <div className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-black flex items-center px-3 lg:px-0">
                 SiddhiCred
               </div>
               {/* <!-- mobile nav --> */}
-              <div className="flex flex-row items-center py-4 lg:py-0">
-                <div className="relative text-gray-900 hover:text-black block lg:hidden">
+              <div className="flex flex-row items-center py-4 lg:py-0 px-3">
+                <div className="relative text-gray-900 hover:text-black lg:hidden flex">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     type="button"
@@ -96,6 +137,18 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
                       </svg>
                     )}
                   </button>
+                  <button
+                    onClick={() => connectMetamask()}
+                    className="relative text-white "
+                  >
+                    <span
+                      className="bg-blue-500 pt-2 pb-2 pl-3 pr-3 mx-1 hover:bg-blue-700 font-semibold rounded-sm hover:cursor-pointer"
+                      target="_blank"
+                      // href={issuer.website}
+                    >
+                      Connect
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -105,27 +158,41 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
               <ul
                 className={`${
                   isMenuOpen ? "hidden" : ""
-                } navbar lg:bg-transparent w-full text-center lg:text-left lg:flex lg:flex-row text-gray-900 text-sm items-center font-bold mt-1 pt-3`}
+                } navbar lg:bg-transparent w-full text-center lg:text-left lg:flex lg:flex-row text-gray-900 text-sm items-center font-bold mt-0 pt-0`}
               >
                 {navigation.map((nav, idx) => (
                   <li
                     onClick={() => navigate(nav.href)}
                     key={idx}
-                    className="relative hover:underline hover:underline-offset-8 text-white bg-black"
+                    className="relative hover:underline hover:underline-offset-8 text-black text-xl lg:text-sm"
                   >
-                    <a
+                    <span
+                      href=""
                       style={{ cursor: "pointer" }}
-                      className="active block py-2 lg:py-7 px-3 rounded-sm lg:border-transparent "
+                      className="active block py-1 lg:py-4 px-3 rounded-sm lg:border-transparent "
                     >
                       {nav.name}
-                    </a>
+                    </span>
                   </li>
                 ))}
+                <li
+                  onClick={() => connectMetamask()}
+                  className="relative text-white hidden lg:block"
+                >
+                  <span
+                    className="bg-blue-500 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-700 font-semibold rounded-sm hover:cursor-pointer"
+                    target="_blank"
+                    // href={issuer.website}
+                  >
+                    Connect
+                  </span>
+                </li>
               </ul>
             </div>
           </div>
         </div>
       </nav>
+      <hr />
     </header>
   );
 };

@@ -2,13 +2,16 @@ import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import User from "../context/User";
 
-// user routes
-import Issued from "./default/Issued";
-import UserHome from "./default/UserHome";
+import ApplicationHome from "./ApplicationHome";
+import Register from "./earner/Register";
+
+// earner routes
+import Issued from "./earner/Issued";
+import EarnerHome from "./earner/UserHome";
 import IssuerProfile from "./issuerRole/IssuerProfile";
-import Search from "./default/Search";
-import CertificateInfo from "./default/CertificateInfo";
-import UserProfile from "./default/UserProfile";
+import Search from "./earner/Search";
+import CertificateInfo from "./earner/CertificateInfo";
+import UserProfile from "./earner/UserProfile";
 
 // issuer routes
 import IssuerHome from "./issuerRole/IssuerHome";
@@ -22,6 +25,7 @@ import CreateIssuer from "./adminRole/CreateIssuer";
 
 // other imports
 import { ROLES } from "../constants";
+import PageNotFound from "../common/PageNotFound";
 
 const Main = () => {
   const { role } = useContext(User);
@@ -32,29 +36,34 @@ const Main = () => {
         return <AdminHome />;
       case ROLES.ISSUER:
         return <IssuerHome />;
-      case ROLES.USER:
-        return <UserHome />;
+      case ROLES.EARNER:
+        return <EarnerHome />;
     }
   };
 
   return (
-    <Routes>
-      {/* <Route path="/" element={} */}
+    <div className="">
+      <Routes>
+        {/* <Route path="/" element={} */}
 
-      {/* User Specific Routes */}
+        {/* User Specific Routes */}
+        <Route path="/" element={<ApplicationHome />} />
+        <Route path="/register" element={<Register />} />
 
-      <Route path="/" element={homeScreen()} />
-      {/* <Route path="/search" element={<Search />} /> */}
-      <Route path="/certificate/:id" element={<CertificateInfo />} />
-      <Route path="/profile" element={<UserProfile />} />
+        <Route path="/home" element={homeScreen()} />
+        {/* <Route path="/search" element={<Search />} /> */}
+        <Route path="/certificate/:id" element={<CertificateInfo />} />
+        <Route path="/profile" element={<UserProfile />} />
 
-      {/* Admin Specific Routes */}
-      <Route path="/create_issuer" element={<CreateIssuer />} />
+        {/* Admin Specific Routes */}
+        <Route path="/create_issuer" element={<CreateIssuer />} />
 
-      {/* Issuer Specific Routes */}
-      <Route path="/issue" element={<IssueCertificate />} />
-      <Route path="/issuer/profile" element={<IssuerProfile />} />
-    </Routes>
+        {/* Issuer Specific Routes */}
+        <Route path="/issue" element={<IssueCertificate />} />
+        <Route path="/issuer/profile" element={<IssuerProfile />} />
+        <Route path="/*" element={<PageNotFound />} />
+      </Routes>
+    </div>
   );
 };
 

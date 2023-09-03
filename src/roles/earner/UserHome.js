@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import Issued from "./Issued";
 
-const UserHome = () => {
+const EarnerHome = () => {
   return <Issued />;
 };
 
-export default UserHome;
+export default EarnerHome;

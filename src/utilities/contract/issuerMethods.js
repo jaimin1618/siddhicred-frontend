@@ -8,8 +8,6 @@ const abi = _abi.abi;
 Issuer Role utilities
 ==========================================*/
 async function issueCertificate(walletAddress, cid) {
-  let status;
-
   // validate and sanitize inputs
   if (!isAddress(walletAddress)) {
     return {
@@ -32,14 +30,10 @@ async function issueCertificate(walletAddress, cid) {
     const txReceipt = await tx.wait();
     console.log("txReceipt: ", txReceipt);
     console.log(txReceipt.toJSON());
-
-    // const [transferEvent] = txReceipt.events;
-    // console.log("transferEvent: ", transferEvent);
   } catch (e) {
     if (process.env.REACT_APP_ENVIRONMENT === "development")
       console.error("Error occured: ", e);
 
-    status = false;
     return {
       Status: "Error",
       Message: "Transaction failed due to some problem, Please try again later",
@@ -53,8 +47,6 @@ async function issueCertificate(walletAddress, cid) {
 }
 
 async function burnCertificate(tokenId) {
-  let status;
-
   if (isNaN(tokenId) || tokenId < 0) {
     return {
       Status: "Error",
@@ -71,7 +63,6 @@ async function burnCertificate(tokenId) {
     if (process.env.REACT_APP_ENVIRONMENT === "development")
       console.error("Error occured: ", e);
 
-    status = false;
     return {
       Status: "Error",
       Message: "Transaction failed due to some problem, Please try again later",

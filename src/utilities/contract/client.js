@@ -1,7 +1,4 @@
 import { ethers } from "ethers";
-import _abi from "./SiddhiCred.json";
-const address = process.env.REACT_APP_CONTRACT_ADDRESS;
-const abi = _abi.abi;
 
 /*==========================================
 Basic Wallet and Wallet address functions

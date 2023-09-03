@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ethers } from "ethers";
 
 import "./App.css";
 import Header from "./common/Header";
@@ -18,45 +17,27 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   useEffect(() => {
-    const setAccessRole = async () => {
-      const address = await Interface.Public.getAddress();
-      setAccount(address);
-      const role = await Interface.Public.getWalletAddressRole(address);
+    Interface.Public.checkIsMetamaskInstalled();
+    const user = localStorage.getItem("user");
 
-      if (role === ROLES.ADMIN) setRole(ROLES.ADMIN);
-      else if (role === ROLES.ISSUER) setRole(ROLES.ISSUER);
-      else setRole(ROLES.USER);
-    };
-
-    setAccessRole();
-  }, [account]);
+    if (user) {
+      const json = JSON.parse(user);
+      setAccount(json.address);
+      setRole(json.role);
+    }
+  }, []);
 
   useEffect(() => {
     // runs when user changes account from wallet
+
     async function onAccountChange() {
-      if (window.ethereum == null) {
-        alert(
-          "Download metamask wallet to run this application on your device? 'OK' to go to Metamask download page."
-        );
-        window.location.href = "https://metamask.io/download/";
-      } else {
-        window.ethereum.on("accountsChanged", async function () {
-          let provider;
-          if (window.ethereum === null) {
-            alert("MetaMask wallet is not installed.");
-            provider = await ethers.getDefaultProvider();
-          } else {
-            provider = new ethers.BrowserProvider(window.ethereum);
-          }
-          console.log(provider);
+      // just refesh the page
+      if (!window.ethereum) return;
 
-          const accounts = await provider.send("eth_requestAccounts", []);
-          console.log(accounts);
-          setAccount(accounts[0]);
-
-          window.location.href = "/";
-        });
-      }
+      window.ethereum.on("accountsChanged", async function () {
+        localStorage.clear("user");
+        window.location.href = "/";
+      });
     }
     onAccountChange();
   }, []);
@@ -67,6 +48,8 @@ const App = () => {
         value={{
           address: account,
           role,
+          setAccount: setAccount,
+          setRole: setRole,
         }}
       >
         <ToastContainer />
@@ -75,6 +58,7 @@ const App = () => {
           isMenuOpen={isMenuOpen}
           setIsMenuOpen={setIsMenuOpen}
         />
+
         <Main />
         <Footer />
       </User.Provider>

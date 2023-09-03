@@ -1,7 +1,8 @@
 const ROLES = {
   ADMIN: "ADMIN",
   ISSUER: "ISSUER",
-  USER: "USER",
+  EARNER: "EARNER",
+  GUEST: "GUEST",
 };
 
 const adminNavigations = [

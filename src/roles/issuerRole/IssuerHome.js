@@ -93,7 +93,7 @@ const IssuerHome = () => {
       const ids = await getTokenIds(address);
       const tokenURIs = await getTokenURIs(ids);
       const result = await getTokenIPFSContent(tokenURIs);
-      const total = await getTotalSupply();
+      // const total = await getTotalSupply();
       setCertificates(result);
       setTotalSupply(result.length);
       setIsLoading(false);
