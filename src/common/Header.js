@@ -97,13 +97,13 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <header className="top-0 left-0 right-0 z-40 bg-white">
-      <nav className="main-nav flex">
+      <nav className="main-nav flex py-0 lg:py-3 md:py-3">
         <div className="container xl:max-w-6xl mx-auto px-0">
           <div className="lg:flex lg:justify-between">
             <div className="flex justify-between">
               <div
                 onClick={() => navigate("/")}
-                className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-black flex items-center px-3 lg:px-0"
+                className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-orange-700 flex items-center px-3 lg:px-0"
               >
                 SiddhiCred
               </div>
@@ -157,7 +157,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
                     className="relative text-white "
                   >
                     <span
-                      className="bg-blue-500 pt-2 pb-2 pl-3 pr-3 mx-1 hover:bg-blue-700 font-semibold rounded-sm hover:cursor-pointer"
+                      className="bg-orange-700 pt-2 pb-2 pl-3 pr-3 mx-1 hover:bg-orange-800 font-semibold rounded-sm hover:cursor-pointer"
                       target="_blank"
                       // href={issuer.website}
                     >
@@ -195,7 +195,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
                   className="relative text-white hidden lg:block"
                 >
                   <span
-                    className="bg-blue-500 pt-2 pb-2 pl-3 pr-3 hover:bg-blue-700 font-semibold rounded-sm hover:cursor-pointer"
+                    className="bg-orange-700 pt-2 pb-2 pl-3 pr-3 hover:bg-orange-800 font-semibold rounded-sm hover:cursor-pointer"
                     target="_blank"
                     // href={issuer.website}
                   >

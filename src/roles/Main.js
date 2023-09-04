@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import User from "../context/User";
 
-import ApplicationHome from "./ApplicationHome";
+import ApplicationHome from "./ApplicationHome/ApplicationHome";
 import Register from "./earner/Register";
 
 // earner routes
