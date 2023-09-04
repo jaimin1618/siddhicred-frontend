@@ -29,7 +29,6 @@ const App = () => {
 
   useEffect(() => {
     // runs when user changes account from wallet
-
     async function onAccountChange() {
       // just refesh the page
       if (!window.ethereum) return;

@@ -18,6 +18,7 @@ async function requestAccounts() {
   try {
     signer = await provider.getSigner();
 
+    /*
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -34,6 +35,7 @@ async function requestAccounts() {
       icon: "success",
       title: "Metamask already connected!👍",
     });
+    */
   } catch (e) {
     if (process.env.REACT_APP_ENVIRONMENT === "development") console.log(e);
 

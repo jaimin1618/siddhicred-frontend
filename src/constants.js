@@ -26,7 +26,7 @@ Profile => Admin user account details, name, and more
 ================================*/
 
 const earnerNavigations = [
-  { name: "Home", href: "/" },
+  { name: "Dashboard", href: "/home" },
   { name: "Profile", href: "/profile" },
 ];
 

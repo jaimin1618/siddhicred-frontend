@@ -43,4 +43,15 @@ class Issuer {
   }
 }
 
-export { Certificate, Issuer };
+class Earner {
+  constructor({ fname, lname, address, profileImageURL, about }) {
+    this.address = address;
+    this.profileImageURL = profileImageURL;
+    this.firstName = fname;
+    this.lastName = lname;
+    this.about = about;
+    this.dateOfJoiningPlatform = new Date();
+  }
+}
+
+export { Certificate, Issuer, Earner };

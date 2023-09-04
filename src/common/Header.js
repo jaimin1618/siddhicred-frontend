@@ -101,7 +101,10 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
         <div className="container xl:max-w-6xl mx-auto px-0">
           <div className="lg:flex lg:justify-between">
             <div className="flex justify-between">
-              <div className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-black flex items-center px-3 lg:px-0">
+              <div
+                onClick={() => navigate("/")}
+                className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-black flex items-center px-3 lg:px-0"
+              >
                 SiddhiCred
               </div>
               {/* <!-- mobile nav --> */}

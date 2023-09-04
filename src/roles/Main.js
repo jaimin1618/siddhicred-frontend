@@ -11,7 +11,7 @@ import EarnerHome from "./earner/UserHome";
 import IssuerProfile from "./issuerRole/IssuerProfile";
 import Search from "./earner/Search";
 import CertificateInfo from "./earner/CertificateInfo";
-import UserProfile from "./earner/UserProfile";
+import EarnerProfile from "./earner/EarnerProfile";
 
 // issuer routes
 import IssuerHome from "./issuerRole/IssuerHome";
@@ -51,7 +51,7 @@ const Main = () => {
         <Route path="/home" element={homeScreen()} />
         {/* <Route path="/search" element={<Search />} /> */}
         <Route path="/certificate/:id" element={<CertificateInfo />} />
-        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/profile" element={<EarnerProfile />} />
 
         {/* Admin Specific Routes */}
         <Route path="/create_issuer" element={<CreateIssuer />} />
