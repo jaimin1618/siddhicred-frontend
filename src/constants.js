@@ -25,12 +25,13 @@ Home => Dashboard to view total issued certificates, types of certificate issued
 Profile => Admin user account details, name, and more
 ================================*/
 
-const defaultNavigations = [
+const earnerNavigations = [
   { name: "Home", href: "/" },
-  // { name: "Search Certificate", href: "/search" },
-  // { name: "Issued", href: "/issued" },
   { name: "Profile", href: "/profile" },
 ];
+
+const guestNavigations = [{ name: "Home", href: "/" }];
+
 /*================================
 Home => Details about app, number of issued certificate 
 Search => Search for certificate and request issuer for that certificate
@@ -67,7 +68,8 @@ const firstCertificateIssuerInfo = {
 module.exports = {
   adminNavigations,
   issuerNavigations,
-  defaultNavigations,
+  earnerNavigations,
+  guestNavigations,
   ROLES,
   firstCertificateInfo,
   firstCertificateIssuerInfo,

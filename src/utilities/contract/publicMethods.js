@@ -1,49 +1,13 @@
 import { ethers, isAddress } from "ethers";
 import _abi from "./SiddhiCred.json";
 import requestAccounts from "./client";
-import Swal from "sweetalert2";
+import {
+  checkIsMetamaskInstalled,
+  MetaMaskAccountNotConnectedAlert,
+} from "./alerts";
 
 const address = process.env.REACT_APP_CONTRACT_ADDRESS;
 const abi = _abi.abi;
-
-function checkIsMetamaskInstalled() {
-  if (window.ethereum == null) {
-    Swal.fire({
-      title: "Oops...don't 👎 have Metamask wallet.",
-      text: "Metamask wallet is required to interact with the app, please add the extension using the below link.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Download Metamask",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "https://metamask.io/download/";
-      }
-    });
-    return false;
-  }
-  return true;
-}
-
-function alertMetamaskConnected() {
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: false,
-    didOpen: (toast) => {
-      toast.addEventListener("mouseenter", Swal.stopTimer);
-      toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-  });
-
-  Toast.fire({
-    icon: "success",
-    title: "Metamask already connected!👍",
-  });
-}
 
 async function requestAccountConnect() {
   await requestAccounts();
@@ -51,12 +15,23 @@ async function requestAccountConnect() {
 
 async function getAddress() {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
   const address = signer.getAddress();
   return address;
 }
 
 async function getAdmin() {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const adminAddress = await contract.admin();
   return adminAddress;
@@ -75,6 +50,12 @@ async function getIssuerInfo(walletAddress) {
 
   try {
     const signer = await requestAccounts();
+
+    if (signer === null) {
+      MetaMaskAccountNotConnectedAlert();
+      return null;
+    }
+
     const contract = new ethers.Contract(address, abi, signer);
     const CID = await contract.getIssuerInfo(walletAddress);
     // console.log(CID);
@@ -97,6 +78,12 @@ async function getIssuerInfo(walletAddress) {
 async function balanceOf(walletAddress) {}
 async function getWalletAddressRole(walletAddress) {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const walletAddressRole = await contract.getWalletAddressRole(walletAddress);
   return walletAddressRole;
@@ -104,6 +91,12 @@ async function getWalletAddressRole(walletAddress) {
 
 async function ownerOf(tokenId) {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const walletAddress = await contract.ownerOf(tokenId);
   return walletAddress;
@@ -111,6 +104,12 @@ async function ownerOf(tokenId) {
 
 async function countIssuedCertificates(walletAddress) {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const balance = await contract.balanceOf(walletAddress);
   return balance;
@@ -118,6 +117,12 @@ async function countIssuedCertificates(walletAddress) {
 
 async function getUserTokenIds() {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const tokenIds = await contract.tokensOfOwner();
   return tokenIds;
@@ -125,6 +130,12 @@ async function getUserTokenIds() {
 
 async function tokenURI(tokenId) {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const uri = await contract.tokenURI(tokenId);
   return uri;
@@ -132,6 +143,12 @@ async function tokenURI(tokenId) {
 
 async function totalSupply() {
   const signer = await requestAccounts();
+
+  if (signer === null) {
+    MetaMaskAccountNotConnectedAlert();
+    return null;
+  }
+
   const contract = new ethers.Contract(address, abi, signer);
   const total = await contract.totalSupply();
   return total;
@@ -150,6 +167,12 @@ async function getFirstToken(walletAddress, IpfsHash) {
 
   try {
     const signer = await requestAccounts();
+
+    if (signer === null) {
+      MetaMaskAccountNotConnectedAlert();
+      return null;
+    }
+
     const contract = new ethers.Contract(address, abi, signer);
     const tx = await contract.getFirstToken(walletAddress, IpfsHash);
     status = await tx.wait();
@@ -176,6 +199,12 @@ async function registerEarner(IpfsHash) {
 
   try {
     const signer = await requestAccounts();
+
+    if (signer === null) {
+      MetaMaskAccountNotConnectedAlert();
+      return null;
+    }
+
     const contract = new ethers.Contract(address, abi, signer);
     const tx = await contract.registerEarner(IpfsHash);
     status = await tx.wait();
@@ -201,6 +230,12 @@ async function getEarnerAccountInfo(walletAddress) {
 
   try {
     const signer = await requestAccounts();
+
+    if (signer === null) {
+      MetaMaskAccountNotConnectedAlert();
+      return null;
+    }
+
     const contract = new ethers.Contract(address, abi, signer);
     IpfsHash = await contract.getEarnerAccountInfo(walletAddress);
   } catch (e) {
@@ -224,6 +259,12 @@ async function updateEarnerInfo(IpfsHash) {
 
   try {
     const signer = await requestAccounts();
+
+    if (signer === null) {
+      MetaMaskAccountNotConnectedAlert();
+      return null;
+    }
+
     const contract = new ethers.Contract(address, abi, signer);
     const tx = await contract.updateEarnerInfo(IpfsHash);
     status = await tx.wait();
@@ -258,7 +299,7 @@ const _ = {
   getFirstToken,
   requestAccountConnect,
   checkIsMetamaskInstalled,
-  alertMetamaskConnected,
+
   registerEarner,
   getEarnerAccountInfo,
   updateEarnerInfo,

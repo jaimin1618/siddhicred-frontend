@@ -44,8 +44,6 @@ const Main = () => {
   return (
     <div className="">
       <Routes>
-        {/* <Route path="/" element={} */}
-
         {/* User Specific Routes */}
         <Route path="/" element={<ApplicationHome />} />
         <Route path="/register" element={<Register />} />

@@ -2,7 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import {
   adminNavigations,
   issuerNavigations,
-  defaultNavigations,
+  earnerNavigations,
+  guestNavigations,
   ROLES,
 } from "../constants";
 // import Logo from "../media/Logo.png";
@@ -41,21 +42,32 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
   const { setAccount, setRole } = useContext(User);
 
   useEffect(() => {
-    if (userRole === ROLES.ADMIN) setNavigation(adminNavigations);
-    else if (userRole === ROLES.ISSUER) setNavigation(issuerNavigations);
-    else setNavigation(defaultNavigations);
+    switch (userRole) {
+      case ROLES.ADMIN:
+        setNavigation(adminNavigations);
+        break;
+      case ROLES.ISSUER:
+        setNavigation(issuerNavigations);
+        break;
+      case ROLES.EARNER:
+        setNavigation(earnerNavigations);
+        break;
+      default:
+        setNavigation(guestNavigations);
+    }
   }, [userRole]);
 
   const connectMetamask = async () => {
     const check = Interface.Public.checkIsMetamaskInstalled();
     if (!check) return;
-    Interface.Public.alertMetamaskConnected();
-    await Interface.Public.requestAccountConnect();
 
     const setAccountAndAccessRole = async () => {
       const address = await Interface.Public.getAddress();
+      if (!address) return;
       setAccount(address);
       const role = await Interface.Public.getWalletAddressRole(address);
+      if (!role) return;
+
       setRole(role);
       localStorage.setItem("user", JSON.stringify({ address, role }));
 
@@ -63,7 +75,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
         // rediect to register page.
         Swal.fire({
           title: "Oops...you still haven't registered an earner account! 😅.",
-          text: "Click on \"Register Now\" button below, it will send you to registration page.",
+          text: 'Click on "Register Now" button below, it will send you to registration page.',
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
