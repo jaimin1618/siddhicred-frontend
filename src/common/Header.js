@@ -67,8 +67,8 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
       setAccount(address);
       const role = await Interface.Public.getWalletAddressRole(address);
       if (!role) return;
-
       setRole(role);
+
       localStorage.setItem("user", JSON.stringify({ address, role }));
 
       if (role === ROLES.GUEST) {
@@ -88,7 +88,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
         });
       } else {
         // just refresh the page
-        window.location.href = "/";
+        // window.location.href = "/";
       }
     };
 
@@ -103,7 +103,7 @@ const Header = ({ userRole, isMenuOpen, setIsMenuOpen }) => {
             <div className="flex justify-between">
               <div
                 onClick={() => navigate("/")}
-                className="underline underline-offset-4 mx-w-10 text-xl font-bold capitalize text-orange-700 flex items-center px-3 lg:px-0"
+                className="underline underline-offset-8 mx-w-10 lg:text-4xl md:text-4xl text-xl font-bold capitalize text-orange-700 flex items-center px-3 lg:px-0"
               >
                 SiddhiCred
               </div>

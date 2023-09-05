@@ -3,7 +3,7 @@ import React from "react";
 const Banner = () => {
   return (
     <section className="">
-      <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
+      <div className="mx-auto max-w-screen-xl px-4 py-20 lg:flex lg:h-screen lg:items-center">
         <div className="mx-auto max-w-xl text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">
             SiddhiCred - A Platform for NFT certificates issuance

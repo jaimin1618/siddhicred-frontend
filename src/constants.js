@@ -30,7 +30,7 @@ const earnerNavigations = [
   { name: "Profile", href: "/profile" },
 ];
 
-const guestNavigations = [{ name: "Home", href: "/" }];
+const guestNavigations = [];
 
 /*================================
 Home => Details about app, number of issued certificate 

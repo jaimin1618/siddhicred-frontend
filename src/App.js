@@ -17,14 +17,30 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   useEffect(() => {
-    Interface.Public.checkIsMetamaskInstalled();
-    const user = localStorage.getItem("user");
+    const makeAndCheckMetamaskConnection = async () => {
+      await Interface.Public.checkIsMetamaskInstalled();
+      const signer = await Interface.Public.requestAccountConnect();
 
-    if (user) {
-      const json = JSON.parse(user);
-      setAccount(json.address);
-      setRole(json.role);
-    }
+      if (signer === null) return;
+
+      const address = await Interface.Public.getAddress();
+      const user = localStorage.getItem("user");
+
+      if (user) {
+        const json = JSON.parse(user);
+        if (json.address === String(address)) {
+          setAccount(json.address);
+          setRole(json.role);
+        }
+      } else {
+        const _role = await Interface.Public.getWalletAddressRole(address);
+        localStorage.setItem("user", JSON.stringify({ address, role: _role }));
+        setAccount(address);
+        setRole(_role);
+      }
+    };
+
+    makeAndCheckMetamaskConnection();
   }, []);
 
   useEffect(() => {
