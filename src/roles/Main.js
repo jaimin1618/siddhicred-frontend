@@ -6,8 +6,7 @@ import ApplicationHome from "./ApplicationHome/ApplicationHome";
 import Register from "./earner/Register";
 
 // earner routes
-import Issued from "./earner/Issued";
-import EarnerHome from "./earner/UserHome";
+import EarnerHome from "./earner/EarnerHome";
 import IssuerProfile from "./issuerRole/IssuerProfile";
 import Search from "./earner/Search";
 import CertificateInfo from "./earner/CertificateInfo";

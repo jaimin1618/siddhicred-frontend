@@ -173,7 +173,8 @@ const Register = () => {
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+      window.location.href = "/";
+    }, 1000);
   };
 
   return (

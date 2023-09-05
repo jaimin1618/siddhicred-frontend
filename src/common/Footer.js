@@ -31,12 +31,12 @@ const Footer = () => {
           <ul className="mt-4 flex justify-center gap-3 sm:mt-0 lg:justify-end">
             <li>
               <a
-                href="/"
+                href="https://www.linkedin.com/in/jaimin1618/"
                 rel="noreferrer"
                 target="_blank"
                 className="text-gray-700 transition hover:opacity-75"
               >
-                <span className="sr-only">Twitter</span>
+                <span className="sr-only">LinkedIn</span>
 
                 <svg
                   className="h-6 w-6"
@@ -55,7 +55,7 @@ const Footer = () => {
 
             <li>
               <a
-                href="/"
+                href="https://github.com/jaimin1618"
                 rel="noreferrer"
                 target="_blank"
                 className="text-gray-700 transition hover:opacity-75"
@@ -79,7 +79,7 @@ const Footer = () => {
 
             <li>
               <a
-                href="/"
+                href="https://twitter.com/_jaimin1618"
                 rel="noreferrer"
                 target="_blank"
                 className="text-gray-700 transition hover:opacity-75"

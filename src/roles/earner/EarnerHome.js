@@ -1,0 +1,327 @@
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import IPFS from "../../utilities/ipfs/pinata";
+import Interface from "../../utilities/contract/";
+import User from "../../context/User";
+import { ThreeDots } from "react-loader-spinner";
+import { Certificate } from "../../utilities/templates";
+import {
+  firstCertificateInfo,
+  firstCertificateIssuerInfo,
+} from "../../constants";
+
+const EarnerHome = () => {
+  const { address } = useContext(User);
+  const GATEWAY = process.env.REACT_APP_IPFS_PUBLIC_GATEWAY;
+  const [searchKey, setSearchKey] = useState("");
+  const [tokenList, setTokenList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleButtonClick = async () => {
+    firstCertificateInfo.issued = {
+      name: "Jane Doe",
+      address,
+    };
+    firstCertificateInfo.issuer = firstCertificateIssuerInfo;
+
+    // firstCertificateInfo.issuedBy =
+    const certificateContent = new Certificate(firstCertificateInfo);
+
+    // pin this certificate on ipfs
+    const uploadJson = await IPFS.pinJson(certificateContent);
+
+    // IF: Json upload fails
+    if (uploadJson.Status === "Error") {
+      toast.error("Error! Uploading new Certificate content to IPFS failed.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+
+    // get IPFS uploaded certificate CID
+    // IF: json upload success
+    toast.success(
+      "Success! Certificate Content uploaded to IPFS successfully.",
+      {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      }
+    );
+
+    // save it on blockchain issued to walletAddress and IpfsHash
+    const res = await Interface.Public.getFirstToken(
+      address,
+      uploadJson.IpfsHash
+    );
+
+    if (res.Status === "Error") {
+      toast.error(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+    } else if (res.Status === "Success") {
+      toast.success(res.Message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        hideProgressBar: true,
+        autoClose: 3000,
+      });
+
+      window.location.href = "/";
+    }
+  };
+
+  useEffect(() => {
+    const getTokenIds = async () => {
+      const tokenIds = await Interface.Public.getUserTokenIds();
+      const ids = tokenIds.map((id) => parseInt(id, 10));
+      return ids;
+    };
+
+    const getTokenURIs = async (ids) => {
+      const uri = await ids.map(async (id) => {
+        const tokenURI = await Interface.Public.tokenURI(id);
+        return { tokenURI, tokenId: id };
+      });
+      return Promise.all(uri);
+    };
+
+    const getTokenIPFSContent = (tokens) => {
+      // console.log(tokens);
+      const ipfsContent = tokens.map(async (token, idx) => {
+        const httpRes = await axios.get(GATEWAY + token.tokenURI);
+        // console.log(httpRes.data);
+        return {
+          ...httpRes.data,
+          tokenId: token.tokenId,
+        };
+      });
+
+      return Promise.all(ipfsContent);
+    };
+
+    const main = async () => {
+      setIsLoading(true);
+      const ids = await getTokenIds();
+      const tokens = await getTokenURIs(ids);
+      const certificates = await getTokenIPFSContent(tokens || []);
+      setTokenList(certificates || []);
+      setIsLoading(false);
+    };
+
+    main();
+  }, []);
+
+  const renderCertificates = () => {
+    if (isLoading) {
+      return (
+        <ThreeDots
+          height="80"
+          width="80"
+          radius="9"
+          color="#4fa94d"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      );
+    }
+
+    if (tokenList && tokenList.length > 0) {
+      return (
+        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5 px-2 mb-5" >
+          {tokenList.map((token, idx) => (
+            <a
+              key={idx}
+              onClick={() => navigate("/certificate/" + token.tokenId)}
+              className="group block shadow-sm pb-3"
+            >
+              <img
+                src={token.imageURL ? token.imageURL : "/images/notfound.png"}
+                alt=""
+                className="h-[350px] w-full object-cover sm:h-[300px] group-hover:scale-105"
+              />
+
+              <div className="mt-3 flex justify-between text-md font-serif">
+                <div className="px-3">
+                  <h3 className="text-gray-900 group-hover:font-semibold group-hover:underline-offset-4 font-medium">
+                    {token.name}
+                  </h3>
+
+                  <p className="mt-1.5 max-w-[45ch] text-xs text-gray-500">
+                    {token.description.substring(0, 100)}...
+                  </p>
+                </div>
+
+                {/* <p className="text-gray-900">$299</p> */}
+              </div>
+            </a>
+            // <div key={idx} className="mt-4 text-md font-medium">
+            //   <a onClick={() => navigate("/certificate/" + token.tokenId)}>
+            //     <img
+            //       className="hover:grow hover:shadow-md h-2/3"
+            //       src={token.imageURL ? token.imageURL : "/images/notfound.png"}
+            //       height="300px"
+            //       width="300px"
+            //     />
+            //     <div className="pt-1 pb-1 flex-col items-center justify-between align-middle h-1/4 bg-yellow-400 rounded-b-sm">
+            //       <p className="w-full h-1/2 p-2">
+            //         {token.name.substring(0, 65)}
+            //       </p>
+            //       <p className="h-1/2 w-full text-gray-900 p-2">
+            //         {new Date(token.issueDate).toDateString()}
+            //       </p>
+            //     </div>
+            //   </a>
+            // </div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className="mb-4 w-full rounded-lg bg-warning-100 px-6 py-5 text-base font-semibold"
+        role="alert"
+      >
+        <div className="grid h-screen px-4 bg-white">
+          <div className="">
+            Oh! No 😕, Cannot find any certificates associated with this
+            account.
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <section className="mt-0 py-0">
+      {!isLoading && tokenList && tokenList.length === 0 && (
+        <div className="bg-red-700 px-3 py-3 text-white sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+          <p className="text-md font-medium text-center sm:text-left">
+            Obtain your first certificate with a click on a button.
+            {/* <br className="sm:hidden" /> */}
+            {/* Check out this new deep dive course! */}
+          </p>
+
+          <a
+            onClick={() => handleButtonClick()}
+            className="px-2 py-1 mt-2 lg:mt-0 md:mt-0 block rounded-sm bg-white text-center text-sm font-medium text-indigo-600 transition hover:bg-white/90 focus:outline-none focus:ring active:text-indigo-500"
+          >
+            Get a Certificate
+          </a>
+        </div>
+      )}
+
+      <div className="container mx-auto flex items-center flex-wrap pt-1 pb-1">
+        <nav id="store" className="w-full z-30 top-0 px-3 py-1">
+          <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-3">
+            <a
+              className="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl "
+              // href="#"
+            >
+              Your Certificates
+            </a>
+
+            {/* <div className="mt-6 mb-3 w-full">
+              <form>
+                <label
+                  htmlFor="default-search"
+                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300"
+                >
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    onChange={(e) => setSearchKey(e.target.value)}
+                    type="search"
+                    id="default-search"
+                    className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Search certificates..."
+                    required
+                  />
+                  <button
+                    onClick={() => handleSearchReset()}
+                    type="button"
+                    className="text-white absolute right-24 bottom-2.5 bg-yellow-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={() => handleSearch()}
+                    type="button"
+                    className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
+            </div> */}
+
+            {/* <div className="flex items-center" id="store-nav-content">
+              <a
+                className="pl-3 inline-block no-underline hover:text-black"
+                href="#"
+              >
+                <svg
+                  className="fill-current hover:text-black"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M7 11H17V13H7zM4 7H20V9H4zM10 15H14V17H10z" />
+                </svg>
+              </a>
+
+              <a
+                className="pl-3 inline-block no-underline hover:text-black"
+                href="#"
+              >
+                <svg
+                  className="fill-current hover:text-black"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z" />
+                </svg>
+              </a>
+            </div> */}
+          </div>
+        </nav>
+      </div>
+      <div className="lg:px-3 lg:py-0 md:p-3 flex justify-center">
+        {renderCertificates()}
+      </div>
+    </section>
+  );
+};
+
+export default EarnerHome;

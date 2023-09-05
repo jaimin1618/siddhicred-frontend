@@ -6,7 +6,7 @@ const ROLES = {
 };
 
 const adminNavigations = [
-  { name: "Dashboard", href: "/" },
+  { name: "Dashboard", href: "/home" },
   { name: "Create Issuer", href: "/create_issuer" },
 ];
 /*================================
@@ -15,7 +15,7 @@ Profile => Admin user account details, name, and more
 ================================*/
 
 const issuerNavigations = [
-  { name: "Home", href: "/" },
+  { name: "Dashboard", href: "/home" },
   { name: "Issue", href: "/issue" },
   // { name: "Revoke", href: "/revoke" },
   { name: "Profile", href: "/issuer/profile" },
