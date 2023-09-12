@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Contact = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -20,6 +21,45 @@ const Contact = () => {
 
   const handleSubmitButtonClick = async () => {
     const httpRes = await axios.post(endpoint);
+
+    if (httpRes.status && httpRes.data) {
+      const json = httpRes.data.message;
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Thanks!👍 I will reply back to you soon!",
+      });
+    } else {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title:
+          "Error! Sorry 😔! We are unable to receive your message for now.",
+      });
+    }
   };
 
   return (

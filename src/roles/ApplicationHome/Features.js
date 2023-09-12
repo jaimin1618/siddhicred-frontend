@@ -2,7 +2,7 @@ import React from "react";
 
 const Features = () => {
   return (
-    <section className=" text-black">
+    <section id="features" className=" text-black">
       <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
         <div className="mx-auto max-w-lg text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">Platform features</h2>
@@ -17,7 +17,7 @@ const Features = () => {
         <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +48,7 @@ const Features = () => {
 
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -70,16 +70,16 @@ const Features = () => {
             <h2 className="mt-4 text-xl font-bold text-black">Transparent</h2>
 
             <p className="mt-1 text-sm text-black">
-              Public Earner profiles, Issuer profiles and Ownership of issued
-              NFT / Certificate are kept public and completely transparent,
-              which also makes it easy to share certificate Ownerships and
-              earner profile.
+              Public profiles of earners, issuer profiles, and ownership records
+              of issued NFTs/Certificates are maintained in a publicly
+              accessible and fully transparent manner, facilitating the
+              effortless sharing of certificate ownership and earner profiles.
             </p>
           </a>
 
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -103,13 +103,17 @@ const Features = () => {
             </h2>
 
             <p className="mt-1 text-sm text-black">
-              Using public blockchain (ethereum) provides immutabi
+              Blockchain offers an immutable ledger that remains unaltered and
+              unmodifiable without the execution of a transaction. Only the
+              rightful owners and authorized organization issuers have the
+              capability to carry out their designated actions using their
+              wallet accounts.
             </p>
           </a>
 
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -131,15 +135,15 @@ const Features = () => {
             <h2 className="mt-4 text-xl font-bold text-black">Verifiable</h2>
 
             <p className="mt-1 text-sm text-black">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex ut quo
-              possimus adipisci distinctio alias voluptatum blanditiis
-              laudantium.
+              The issuance of certificates and the ownership of these issued
+              certificates are openly accessible and easily confirmable by
+              anyone via the public network.
             </p>
           </a>
 
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,19 +163,21 @@ const Features = () => {
             </svg>
 
             <h2 className="mt-4 text-xl font-bold text-black">
-              Soulbound - Non transferable
+              Soulbound - Non transferable NFTs
             </h2>
 
             <p className="mt-1 text-sm text-black">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex ut quo
-              possimus adipisci distinctio alias voluptatum blanditiis
-              laudantium.
+              By default, NFTs (tokens) can be transferred to another wallet
+              account, but Soulbound NFTs are non-transferrable, fulfilling
+              their role as certificates. Once a certificate is assigned to an
+              account, it becomes bound to that wallet address and cannot be
+              moved to a different one.
             </p>
           </a>
 
           <a
             className="block rounded-xl border border-red-500/10 p-8 shadow-md transition hover:border-pink-500/10 hover:shadow-pink-500/10 hover:scale-110"
-            href="/services/digital-campaigns"
+            // href="/services/digital-campaigns"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -190,26 +196,15 @@ const Features = () => {
               />
             </svg>
 
-            <h2 className="mt-4 text-xl font-bold text-black">
-              Digital campaigns
-            </h2>
+            <h2 className="mt-4 text-xl font-bold text-black">Easy to use</h2>
 
             <p className="mt-1 text-sm text-black">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex ut quo
-              possimus adipisci distinctio alias voluptatum blanditiis
-              laudantium.
+              The SiddhiCred platform is designed with user-friendliness as a
+              top priority. User just needs to connect their wallet and approve
+              / authorize the actions (transactions).
             </p>
           </a>
         </div>
-
-        {/* <div className="mt-12 text-center">
-          <a
-            href="#"
-            className="inline-block rounded bg-pink-600 px-12 py-3 text-sm font-medium text-black transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 hover:scale-110"
-          >
-            Get Started Today
-          </a>
-        </div> */}
       </div>
     </section>
   );
